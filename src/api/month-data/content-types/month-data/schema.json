@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "months_data",
+  "info": {
+    "singularName": "month-data",
+    "pluralName": "months-data",
+    "displayName": "MonthData"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "uid"
+    },
+    "month": {
+      "type": "enumeration",
+      "enum": [
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "october",
+        "november",
+        "december"
+      ],
+      "required": true
+    },
+    "year": {
+      "type": "integer",
+      "max": 3000,
+      "required": true
+    },
+    "totalDays": {
+      "type": "integer",
+      "max": 31,
+      "required": true
+    },
+    "workingDays": {
+      "type": "integer",
+      "required": true
+    }
+  }
+}
