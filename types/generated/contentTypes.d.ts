@@ -788,6 +788,175 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiBankDetailBankDetail extends Schema.CollectionType {
+  collectionName: 'bank_details';
+  info: {
+    singularName: 'bank-detail';
+    pluralName: 'bank-details';
+    displayName: 'BankDetail';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    empNo: Attribute.Relation<
+      'api::bank-detail.bank-detail',
+      'oneToOne',
+      'api::employee.employee'
+    >;
+    bankName: Attribute.String & Attribute.Required;
+    accountTitle: Attribute.String & Attribute.Required;
+    accountIBAN: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::bank-detail.bank-detail',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::bank-detail.bank-detail',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiEmployeeEmployee extends Schema.CollectionType {
+  collectionName: 'employees';
+  info: {
+    singularName: 'employee';
+    pluralName: 'employees';
+    displayName: 'employee';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    empNo: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetMinMaxLength<{
+        minLength: 12;
+        maxLength: 12;
+      }>;
+    Name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    Designation: Attribute.String & Attribute.Required;
+    joinDate: Attribute.Date & Attribute.Required;
+    permanentDate: Attribute.Date;
+    hubstaffEnabled: Attribute.Boolean & Attribute.Required;
+    employementStatus: Attribute.Enumeration<
+      ['Intern', 'Probation', 'Permanent']
+    > &
+      Attribute.Required;
+    grossSalary: Attribute.BigInteger & Attribute.Required;
+    leavesRemaining: Attribute.Float & Attribute.Required;
+    salarySlipRequired: Attribute.Boolean & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::employee.employee',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::employee.employee',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTaxSlabTaxSlab extends Schema.CollectionType {
+  collectionName: 'tax_slabs';
+  info: {
+    singularName: 'tax-slab';
+    pluralName: 'tax-slabs';
+    displayName: 'TaxSlab';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    slabId: Attribute.Integer & Attribute.Required & Attribute.Unique;
+    lowerCap: Attribute.BigInteger & Attribute.Required;
+    upperCap: Attribute.BigInteger & Attribute.Required;
+    rate: Attribute.Float & Attribute.Required;
+    fixedAmount: Attribute.BigInteger & Attribute.Required;
+    slabUid: Attribute.UID & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::tax-slab.tax-slab',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::tax-slab.tax-slab',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiWithHoldingTaxWithHoldingTax extends Schema.CollectionType {
+  collectionName: 'with_holding_taxes';
+  info: {
+    singularName: 'with-holding-tax';
+    pluralName: 'with-holding-taxes';
+    displayName: 'WithHoldingTax';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    emp_no: Attribute.Relation<
+      'api::with-holding-tax.with-holding-tax',
+      'oneToOne',
+      'api::employee.employee'
+    >;
+    yearlySalary: Attribute.BigInteger & Attribute.Required;
+    totalTaxToBePaid: Attribute.BigInteger & Attribute.Required;
+    monthlyAmountToBePaid: Attribute.BigInteger & Attribute.Required;
+    totalPaid: Attribute.BigInteger;
+    tax_slab: Attribute.Relation<
+      'api::with-holding-tax.with-holding-tax',
+      'oneToOne',
+      'api::tax-slab.tax-slab'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::with-holding-tax.with-holding-tax',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::with-holding-tax.with-holding-tax',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -806,6 +975,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::bank-detail.bank-detail': ApiBankDetailBankDetail;
+      'api::employee.employee': ApiEmployeeEmployee;
+      'api::tax-slab.tax-slab': ApiTaxSlabTaxSlab;
+      'api::with-holding-tax.with-holding-tax': ApiWithHoldingTaxWithHoldingTax;
     }
   }
 }

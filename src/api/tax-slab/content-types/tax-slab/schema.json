@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tax_slabs",
+  "info": {
+    "singularName": "tax-slab",
+    "pluralName": "tax-slabs",
+    "displayName": "TaxSlab",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "slabId": {
+      "type": "integer",
+      "required": true,
+      "unique": true
+    },
+    "lowerCap": {
+      "type": "biginteger",
+      "required": true
+    },
+    "upperCap": {
+      "type": "biginteger",
+      "required": true
+    },
+    "rate": {
+      "type": "float",
+      "required": true
+    },
+    "fixedAmount": {
+      "type": "biginteger",
+      "required": true
+    },
+    "slabUid": {
+      "type": "uid",
+      "required": true
+    }
+  }
+}

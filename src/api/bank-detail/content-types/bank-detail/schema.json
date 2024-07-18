@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bank_details",
+  "info": {
+    "singularName": "bank-detail",
+    "pluralName": "bank-details",
+    "displayName": "BankDetail"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "empNo": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::employee.employee"
+    },
+    "bankName": {
+      "type": "string",
+      "required": true
+    },
+    "accountTitle": {
+      "type": "string",
+      "required": true
+    },
+    "accountIBAN": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

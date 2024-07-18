@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "employees",
+  "info": {
+    "singularName": "employee",
+    "pluralName": "employees",
+    "displayName": "employee"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "empNo": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 12,
+      "minLength": 12
+    },
+    "Name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "Designation": {
+      "type": "string",
+      "required": true
+    },
+    "joinDate": {
+      "type": "date",
+      "required": true
+    },
+    "permanentDate": {
+      "type": "date"
+    },
+    "hubstaffEnabled": {
+      "type": "boolean",
+      "required": true
+    },
+    "employementStatus": {
+      "type": "enumeration",
+      "enum": [
+        "Intern",
+        "Probation",
+        "Permanent"
+      ],
+      "required": true
+    },
+    "grossSalary": {
+      "type": "biginteger",
+      "required": true
+    },
+    "leavesRemaining": {
+      "type": "float",
+      "required": true
+    },
+    "salarySlipRequired": {
+      "type": "boolean",
+      "required": true
+    }
+  }
+}
