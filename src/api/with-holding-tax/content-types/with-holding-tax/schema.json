@@ -15,7 +15,8 @@
     "emp_no": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::employee.employee"
+      "target": "api::employee.employee",
+      "mappedBy": "wht"
     },
     "yearlySalary": {
       "type": "biginteger",

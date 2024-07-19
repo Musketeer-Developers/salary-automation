@@ -4,7 +4,8 @@
   "info": {
     "singularName": "employee",
     "pluralName": "employees",
-    "displayName": "employee"
+    "displayName": "employee",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -64,6 +65,29 @@
       "relation": "oneToMany",
       "target": "api::monthly-salary.monthly-salary",
       "mappedBy": "employee"
+    },
+    "bank_detail": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::bank-detail.bank-detail",
+      "mappedBy": "emp_no"
+    },
+    "empNoUrl": {
+      "type": "uid",
+      "targetField": "empNo",
+      "required": true
+    },
+    "loans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::loan.loan",
+      "mappedBy": "employee"
+    },
+    "wht": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::with-holding-tax.with-holding-tax",
+      "inversedBy": "emp_no"
     }
   }
 }
