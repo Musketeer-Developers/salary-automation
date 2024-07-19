@@ -84,6 +84,18 @@
       "relation": "oneToOne",
       "target": "api::misc-adjustment.misc-adjustment",
       "mappedBy": "monthly_salary"
+    },
+    "dailyWorks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::daily-work.daily-work",
+      "mappedBy": "salaryMonth"
+    },
+    "month_data": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::month-data.month-data",
+      "inversedBy": "monthly_salaries"
     }
   }
 }

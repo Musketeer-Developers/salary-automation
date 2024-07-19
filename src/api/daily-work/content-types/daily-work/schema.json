@@ -4,7 +4,8 @@
   "info": {
     "singularName": "daily-work",
     "pluralName": "daily-works",
-    "displayName": "dailyWork"
+    "displayName": "dailyWork",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -37,6 +38,12 @@
     },
     "isLate": {
       "type": "boolean"
+    },
+    "salaryMonth": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::monthly-salary.monthly-salary",
+      "inversedBy": "dailyWorks"
     }
   }
 }

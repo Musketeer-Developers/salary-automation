@@ -4,7 +4,8 @@
   "info": {
     "singularName": "loan",
     "pluralName": "loans",
-    "displayName": "Loan"
+    "displayName": "Loan",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -27,6 +28,12 @@
     "monthlyAmount": {
       "type": "biginteger",
       "required": true
+    },
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::employee.employee",
+      "inversedBy": "loans"
     }
   }
 }

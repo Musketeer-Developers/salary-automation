@@ -794,12 +794,13 @@ export interface ApiBankDetailBankDetail extends Schema.CollectionType {
     singularName: 'bank-detail';
     pluralName: 'bank-details';
     displayName: 'BankDetail';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    empNo: Attribute.Relation<
+    emp_no: Attribute.Relation<
       'api::bank-detail.bank-detail',
       'oneToOne',
       'api::employee.employee'
@@ -807,6 +808,8 @@ export interface ApiBankDetailBankDetail extends Schema.CollectionType {
     bankName: Attribute.String & Attribute.Required;
     accountTitle: Attribute.String & Attribute.Required;
     accountIBAN: Attribute.String & Attribute.Required;
+    slug: Attribute.UID<'api::bank-detail.bank-detail', 'accountIBAN'> &
+      Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -831,6 +834,7 @@ export interface ApiDailyWorkDailyWork extends Schema.CollectionType {
     singularName: 'daily-work';
     pluralName: 'daily-works';
     displayName: 'dailyWork';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -849,6 +853,11 @@ export interface ApiDailyWorkDailyWork extends Schema.CollectionType {
     isHoliday: Attribute.Boolean;
     isLeave: Attribute.Boolean;
     isLate: Attribute.Boolean;
+    salaryMonth: Attribute.Relation<
+      'api::daily-work.daily-work',
+      'manyToOne',
+      'api::monthly-salary.monthly-salary'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -873,6 +882,7 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
     singularName: 'employee';
     pluralName: 'employees';
     displayName: 'employee';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -906,6 +916,23 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
       'oneToMany',
       'api::monthly-salary.monthly-salary'
     >;
+    bank_detail: Attribute.Relation<
+      'api::employee.employee',
+      'oneToOne',
+      'api::bank-detail.bank-detail'
+    >;
+    empNoUrl: Attribute.UID<'api::employee.employee', 'empNo'> &
+      Attribute.Required;
+    loans: Attribute.Relation<
+      'api::employee.employee',
+      'oneToMany',
+      'api::loan.loan'
+    >;
+    wht: Attribute.Relation<
+      'api::employee.employee',
+      'oneToOne',
+      'api::with-holding-tax.with-holding-tax'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -930,6 +957,7 @@ export interface ApiLoanLoan extends Schema.CollectionType {
     singularName: 'loan';
     pluralName: 'loans';
     displayName: 'Loan';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -943,6 +971,11 @@ export interface ApiLoanLoan extends Schema.CollectionType {
     loanTaken: Attribute.Integer & Attribute.Required;
     remainingAmount: Attribute.BigInteger & Attribute.Required;
     monthlyAmount: Attribute.BigInteger & Attribute.Required;
+    employee: Attribute.Relation<
+      'api::loan.loan',
+      'manyToOne',
+      'api::employee.employee'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1000,12 +1033,13 @@ export interface ApiMonthDataMonthData extends Schema.CollectionType {
     singularName: 'month-data';
     pluralName: 'months-data';
     displayName: 'MonthData';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    uid: Attribute.UID;
+    monthIdentifier: Attribute.UID & Attribute.Required;
     month: Attribute.Enumeration<
       [
         'january',
@@ -1040,6 +1074,11 @@ export interface ApiMonthDataMonthData extends Schema.CollectionType {
         number
       >;
     workingDays: Attribute.Integer & Attribute.Required;
+    monthly_salaries: Attribute.Relation<
+      'api::month-data.month-data',
+      'oneToMany',
+      'api::monthly-salary.monthly-salary'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1105,6 +1144,16 @@ export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
       'api::monthly-salary.monthly-salary',
       'oneToOne',
       'api::misc-adjustment.misc-adjustment'
+    >;
+    dailyWorks: Attribute.Relation<
+      'api::monthly-salary.monthly-salary',
+      'oneToMany',
+      'api::daily-work.daily-work'
+    >;
+    month_data: Attribute.Relation<
+      'api::monthly-salary.monthly-salary',
+      'manyToOne',
+      'api::month-data.month-data'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
