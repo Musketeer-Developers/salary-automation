@@ -825,6 +825,48 @@ export interface ApiBankDetailBankDetail extends Schema.CollectionType {
   };
 }
 
+export interface ApiDailyWorkDailyWork extends Schema.CollectionType {
+  collectionName: 'daily_works';
+  info: {
+    singularName: 'daily-work';
+    pluralName: 'daily-works';
+    displayName: 'dailyWork';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    empNo: Attribute.Relation<
+      'api::daily-work.daily-work',
+      'oneToOne',
+      'api::employee.employee'
+    >;
+    workDate: Attribute.Date;
+    hubstaffHours: Attribute.Decimal & Attribute.Required;
+    manualHours: Attribute.Decimal &
+      Attribute.Required &
+      Attribute.DefaultTo<0>;
+    isHoliday: Attribute.Boolean;
+    isLeave: Attribute.Boolean;
+    isLate: Attribute.Boolean;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::daily-work.daily-work',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::daily-work.daily-work',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiEmployeeEmployee extends Schema.CollectionType {
   collectionName: 'employees';
   info: {
@@ -859,6 +901,11 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
     grossSalary: Attribute.BigInteger & Attribute.Required;
     leavesRemaining: Attribute.Float & Attribute.Required;
     salarySlipRequired: Attribute.Boolean & Attribute.Required;
+    monthly_salaries: Attribute.Relation<
+      'api::employee.employee',
+      'oneToMany',
+      'api::monthly-salary.monthly-salary'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -870,6 +917,126 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::employee.employee',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiMonthDataMonthData extends Schema.CollectionType {
+  collectionName: 'months_data';
+  info: {
+    singularName: 'month-data';
+    pluralName: 'months-data';
+    displayName: 'MonthData';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    uid: Attribute.UID;
+    month: Attribute.Enumeration<
+      [
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december'
+      ]
+    > &
+      Attribute.Required;
+    year: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          max: 3000;
+        },
+        number
+      >;
+    totalDays: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          max: 31;
+        },
+        number
+      >;
+    workingDays: Attribute.Integer & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::month-data.month-data',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::month-data.month-data',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
+  collectionName: 'monthly_salaries';
+  info: {
+    singularName: 'monthly-salary';
+    pluralName: 'monthly-salaries';
+    displayName: 'MonthlySalary';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    employee: Attribute.Relation<
+      'api::monthly-salary.monthly-salary',
+      'manyToOne',
+      'api::employee.employee'
+    >;
+    month: Attribute.Relation<
+      'api::monthly-salary.monthly-salary',
+      'oneToOne',
+      'api::month-data.month-data'
+    >;
+    basicSalary: Attribute.BigInteger & Attribute.Required;
+    grossSalaryEarned: Attribute.BigInteger &
+      Attribute.Required &
+      Attribute.DefaultTo<'0'>;
+    medicalAllowance: Attribute.BigInteger &
+      Attribute.Required &
+      Attribute.DefaultTo<'0'>;
+    paidSalary: Attribute.BigInteger & Attribute.DefaultTo<'0'>;
+    monthlyRate: Attribute.Decimal & Attribute.Required;
+    TotalHoursMonth: Attribute.Integer & Attribute.Required;
+    hoursLogged: Attribute.Decimal & Attribute.DefaultTo<0>;
+    transferStatus: Attribute.Boolean & Attribute.DefaultTo<false>;
+    salarySlipSent: Attribute.Boolean & Attribute.DefaultTo<false>;
+    WTH: Attribute.Decimal & Attribute.Required;
+    miscAdjustments: Attribute.Decimal & Attribute.DefaultTo<0>;
+    loanDeduction: Attribute.Decimal & Attribute.DefaultTo<0>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::monthly-salary.monthly-salary',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::monthly-salary.monthly-salary',
       'oneToOne',
       'admin::user'
     > &
@@ -976,7 +1143,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::bank-detail.bank-detail': ApiBankDetailBankDetail;
+      'api::daily-work.daily-work': ApiDailyWorkDailyWork;
       'api::employee.employee': ApiEmployeeEmployee;
+      'api::month-data.month-data': ApiMonthDataMonthData;
+      'api::monthly-salary.monthly-salary': ApiMonthlySalaryMonthlySalary;
       'api::tax-slab.tax-slab': ApiTaxSlabTaxSlab;
       'api::with-holding-tax.with-holding-tax': ApiWithHoldingTaxWithHoldingTax;
     }

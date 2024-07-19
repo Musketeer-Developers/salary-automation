@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "monthly_salaries",
+  "info": {
+    "singularName": "monthly-salary",
+    "pluralName": "monthly-salaries",
+    "displayName": "MonthlySalary",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::employee.employee",
+      "inversedBy": "monthly_salaries"
+    },
+    "month": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::month-data.month-data"
+    },
+    "basicSalary": {
+      "type": "biginteger",
+      "required": true
+    },
+    "grossSalaryEarned": {
+      "type": "biginteger",
+      "default": "0",
+      "required": true
+    },
+    "medicalAllowance": {
+      "type": "biginteger",
+      "default": "0",
+      "required": true
+    },
+    "paidSalary": {
+      "type": "biginteger",
+      "default": "0"
+    },
+    "monthlyRate": {
+      "type": "decimal",
+      "required": true
+    },
+    "TotalHoursMonth": {
+      "type": "integer",
+      "required": true
+    },
+    "hoursLogged": {
+      "type": "decimal",
+      "required": false,
+      "default": 0
+    },
+    "transferStatus": {
+      "type": "boolean",
+      "default": false
+    },
+    "salarySlipSent": {
+      "type": "boolean",
+      "default": false
+    },
+    "WTH": {
+      "type": "decimal",
+      "required": true
+    },
+    "miscAdjustments": {
+      "type": "decimal",
+      "default": 0
+    },
+    "loanDeduction": {
+      "type": "decimal",
+      "default": 0
+    }
+  }
+}
