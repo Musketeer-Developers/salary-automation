@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "misc_adjustments",
+  "info": {
+    "singularName": "misc-adjustment",
+    "pluralName": "misc-adjustments",
+    "displayName": "MiscAdjustment"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "monthly_salary": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::monthly-salary.monthly-salary",
+      "inversedBy": "misc_adjustment"
+    },
+    "empNo": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::employee.employee"
+    },
+    "note": {
+      "type": "text",
+      "required": true
+    },
+    "amount": {
+      "type": "biginteger",
+      "required": true
+    }
+  }
+}

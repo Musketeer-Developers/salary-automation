@@ -924,6 +924,76 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
   };
 }
 
+export interface ApiLoanLoan extends Schema.CollectionType {
+  collectionName: 'loans';
+  info: {
+    singularName: 'loan';
+    pluralName: 'loans';
+    displayName: 'Loan';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    empNo: Attribute.Relation<
+      'api::loan.loan',
+      'oneToOne',
+      'api::employee.employee'
+    >;
+    loanTaken: Attribute.Integer & Attribute.Required;
+    remainingAmount: Attribute.BigInteger & Attribute.Required;
+    monthlyAmount: Attribute.BigInteger & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::loan.loan', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::loan.loan', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiMiscAdjustmentMiscAdjustment extends Schema.CollectionType {
+  collectionName: 'misc_adjustments';
+  info: {
+    singularName: 'misc-adjustment';
+    pluralName: 'misc-adjustments';
+    displayName: 'MiscAdjustment';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    monthly_salary: Attribute.Relation<
+      'api::misc-adjustment.misc-adjustment',
+      'oneToOne',
+      'api::monthly-salary.monthly-salary'
+    >;
+    empNo: Attribute.Relation<
+      'api::misc-adjustment.misc-adjustment',
+      'oneToOne',
+      'api::employee.employee'
+    >;
+    note: Attribute.Text & Attribute.Required;
+    amount: Attribute.BigInteger & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::misc-adjustment.misc-adjustment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::misc-adjustment.misc-adjustment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiMonthDataMonthData extends Schema.CollectionType {
   collectionName: 'months_data';
   info: {
@@ -1026,6 +1096,16 @@ export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
     WTH: Attribute.Decimal & Attribute.Required;
     miscAdjustments: Attribute.Decimal & Attribute.DefaultTo<0>;
     loanDeduction: Attribute.Decimal & Attribute.DefaultTo<0>;
+    loans: Attribute.Relation<
+      'api::monthly-salary.monthly-salary',
+      'oneToMany',
+      'api::loan.loan'
+    >;
+    misc_adjustment: Attribute.Relation<
+      'api::monthly-salary.monthly-salary',
+      'oneToOne',
+      'api::misc-adjustment.misc-adjustment'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1145,6 +1225,8 @@ declare module '@strapi/types' {
       'api::bank-detail.bank-detail': ApiBankDetailBankDetail;
       'api::daily-work.daily-work': ApiDailyWorkDailyWork;
       'api::employee.employee': ApiEmployeeEmployee;
+      'api::loan.loan': ApiLoanLoan;
+      'api::misc-adjustment.misc-adjustment': ApiMiscAdjustmentMiscAdjustment;
       'api::month-data.month-data': ApiMonthDataMonthData;
       'api::monthly-salary.monthly-salary': ApiMonthlySalaryMonthlySalary;
       'api::tax-slab.tax-slab': ApiTaxSlabTaxSlab;

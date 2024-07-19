@@ -73,6 +73,17 @@
     "loanDeduction": {
       "type": "decimal",
       "default": 0
+    },
+    "loans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::loan.loan"
+    },
+    "misc_adjustment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::misc-adjustment.misc-adjustment",
+      "mappedBy": "monthly_salary"
     }
   }
 }
