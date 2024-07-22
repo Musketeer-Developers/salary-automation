@@ -74,7 +74,6 @@
     },
     "empNoUrl": {
       "type": "uid",
-      "targetField": "empNo",
       "required": true
     },
     "loans": {
