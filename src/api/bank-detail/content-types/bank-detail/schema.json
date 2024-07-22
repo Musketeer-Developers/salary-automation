@@ -4,17 +4,19 @@
   "info": {
     "singularName": "bank-detail",
     "pluralName": "bank-details",
-    "displayName": "BankDetail"
+    "displayName": "BankDetail",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "empNo": {
+    "emp_no": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::employee.employee"
+      "target": "api::employee.employee",
+      "inversedBy": "bank_detail"
     },
     "bankName": {
       "type": "string",
@@ -26,6 +28,12 @@
     },
     "accountIBAN": {
       "type": "string",
+      "required": true,
+      "unique": false
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "accountIBAN",
       "required": true
     }
   }

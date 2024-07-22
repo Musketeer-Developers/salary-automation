@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "daily_works",
+  "info": {
+    "singularName": "daily-work",
+    "pluralName": "daily-works",
+    "displayName": "dailyWork",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "empNo": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::employee.employee"
+    },
+    "workDate": {
+      "type": "date"
+    },
+    "hubstaffHours": {
+      "type": "decimal",
+      "required": true
+    },
+    "manualHours": {
+      "type": "decimal",
+      "required": true,
+      "default": 0
+    },
+    "isHoliday": {
+      "type": "boolean",
+      "required": false
+    },
+    "isLeave": {
+      "type": "boolean"
+    },
+    "isLate": {
+      "type": "boolean"
+    },
+    "salaryMonth": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::monthly-salary.monthly-salary",
+      "inversedBy": "dailyWorks"
+    }
+  }
+}

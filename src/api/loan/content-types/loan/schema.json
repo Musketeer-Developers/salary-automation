@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "loans",
+  "info": {
+    "singularName": "loan",
+    "pluralName": "loans",
+    "displayName": "Loan",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "empNo": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::employee.employee"
+    },
+    "loanTaken": {
+      "type": "integer",
+      "required": true
+    },
+    "remainingAmount": {
+      "type": "biginteger",
+      "required": true
+    },
+    "monthlyAmount": {
+      "type": "biginteger",
+      "required": true
+    },
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::employee.employee",
+      "inversedBy": "loans"
+    }
+  }
+}
