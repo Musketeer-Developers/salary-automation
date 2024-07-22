@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-07-22T08:40:58.250Z"
+    "x-generation-date": "2024-07-22T11:22:45.676Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -96,8 +96,7 @@
             "required": [
               "bankName",
               "accountTitle",
-              "accountIBAN",
-              "slug"
+              "accountIBAN"
             ],
             "type": "object",
             "properties": {
@@ -119,9 +118,6 @@
                 "type": "string"
               },
               "accountIBAN": {
-                "type": "string"
-              },
-              "slug": {
                 "type": "string"
               }
             }
@@ -179,8 +175,7 @@
         "required": [
           "bankName",
           "accountTitle",
-          "accountIBAN",
-          "slug"
+          "accountIBAN"
         ],
         "properties": {
           "emp_no": {
@@ -1113,9 +1108,6 @@
                                   "accountIBAN": {
                                     "type": "string"
                                   },
-                                  "slug": {
-                                    "type": "string"
-                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -1167,9 +1159,6 @@
                             }
                           }
                         }
-                      },
-                      "empNoUrl": {
-                        "type": "string"
                       },
                       "loans": {
                         "type": "object",
@@ -1273,9 +1262,6 @@
                                                 "type": "string",
                                                 "pattern": "^\\d*$",
                                                 "example": "123456789"
-                                              },
-                                              "slabUid": {
-                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -1440,9 +1426,6 @@
             "type": "string"
           },
           "accountIBAN": {
-            "type": "string"
-          },
-          "slug": {
             "type": "string"
           },
           "createdAt": {
@@ -2558,9 +2541,6 @@
                                   "accountIBAN": {
                                     "type": "string"
                                   },
-                                  "slug": {
-                                    "type": "string"
-                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -2612,9 +2592,6 @@
                             }
                           }
                         }
-                      },
-                      "empNoUrl": {
-                        "type": "string"
                       },
                       "loans": {
                         "type": "object",
@@ -2718,9 +2695,6 @@
                                                 "type": "string",
                                                 "pattern": "^\\d*$",
                                                 "example": "123456789"
-                                              },
-                                              "slabUid": {
-                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -3002,8 +2976,7 @@
               "employementStatus",
               "grossSalary",
               "leavesRemaining",
-              "salarySlipRequired",
-              "empNoUrl"
+              "salarySlipRequired"
             ],
             "type": "object",
             "properties": {
@@ -3071,9 +3044,6 @@
                   }
                 ],
                 "example": "string or id"
-              },
-              "empNoUrl": {
-                "type": "string"
               },
               "loans": {
                 "type": "array",
@@ -3161,8 +3131,7 @@
           "employementStatus",
           "grossSalary",
           "leavesRemaining",
-          "salarySlipRequired",
-          "empNoUrl"
+          "salarySlipRequired"
         ],
         "properties": {
           "empNo": {
@@ -3327,9 +3296,6 @@
                                                   "type": "string"
                                                 },
                                                 "accountIBAN": {
-                                                  "type": "string"
-                                                },
-                                                "slug": {
                                                   "type": "string"
                                                 },
                                                 "createdAt": {
@@ -3636,9 +3602,6 @@
                                         }
                                       }
                                     },
-                                    "empNoUrl": {
-                                      "type": "string"
-                                    },
                                     "loans": {
                                       "type": "object",
                                       "properties": {
@@ -3835,9 +3798,6 @@
                                                               "type": "string",
                                                               "pattern": "^\\d*$",
                                                               "example": "123456789"
-                                                            },
-                                                            "slabUid": {
-                                                              "type": "string"
                                                             },
                                                             "createdAt": {
                                                               "type": "string",
@@ -4474,9 +4434,6 @@
                 }
               }
             }
-          },
-          "empNoUrl": {
-            "type": "string"
           },
           "loans": {
             "type": "object",
@@ -5622,9 +5579,6 @@
                                   "accountIBAN": {
                                     "type": "string"
                                   },
-                                  "slug": {
-                                    "type": "string"
-                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -5676,9 +5630,6 @@
                             }
                           }
                         }
-                      },
-                      "empNoUrl": {
-                        "type": "string"
                       },
                       "loans": {
                         "type": "object",
@@ -5782,9 +5733,6 @@
                                                 "type": "string",
                                                 "pattern": "^\\d*$",
                                                 "example": "123456789"
-                                              },
-                                              "slabUid": {
-                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -6264,9 +6212,6 @@
                                               "accountIBAN": {
                                                 "type": "string"
                                               },
-                                              "slug": {
-                                                "type": "string"
-                                              },
                                               "createdAt": {
                                                 "type": "string",
                                                 "format": "date-time"
@@ -6571,9 +6516,6 @@
                                       }
                                     }
                                   },
-                                  "empNoUrl": {
-                                    "type": "string"
-                                  },
                                   "loans": {
                                     "type": "object",
                                     "properties": {
@@ -6770,9 +6712,6 @@
                                                             "type": "string",
                                                             "pattern": "^\\d*$",
                                                             "example": "123456789"
-                                                          },
-                                                          "slabUid": {
-                                                            "type": "string"
                                                           },
                                                           "createdAt": {
                                                             "type": "string",
@@ -7759,9 +7698,6 @@
                                                 "accountIBAN": {
                                                   "type": "string"
                                                 },
-                                                "slug": {
-                                                  "type": "string"
-                                                },
                                                 "createdAt": {
                                                   "type": "string",
                                                   "format": "date-time"
@@ -8066,9 +8002,6 @@
                                         }
                                       }
                                     },
-                                    "empNoUrl": {
-                                      "type": "string"
-                                    },
                                     "loans": {
                                       "type": "object",
                                       "properties": {
@@ -8265,9 +8198,6 @@
                                                               "type": "string",
                                                               "pattern": "^\\d*$",
                                                               "example": "123456789"
-                                                            },
-                                                            "slabUid": {
-                                                              "type": "string"
                                                             },
                                                             "createdAt": {
                                                               "type": "string",
@@ -10076,9 +10006,6 @@
                                   "accountIBAN": {
                                     "type": "string"
                                   },
-                                  "slug": {
-                                    "type": "string"
-                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -10130,9 +10057,6 @@
                             }
                           }
                         }
-                      },
-                      "empNoUrl": {
-                        "type": "string"
                       },
                       "loans": {
                         "type": "object",
@@ -10236,9 +10160,6 @@
                                                 "type": "string",
                                                 "pattern": "^\\d*$",
                                                 "example": "123456789"
-                                              },
-                                              "slabUid": {
-                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -10601,8 +10522,7 @@
               "lowerCap",
               "upperCap",
               "rate",
-              "fixedAmount",
-              "slabUid"
+              "fixedAmount"
             ],
             "type": "object",
             "properties": {
@@ -10627,9 +10547,6 @@
                 "type": "string",
                 "pattern": "^\\d*$",
                 "example": "123456789"
-              },
-              "slabUid": {
-                "type": "string"
               }
             }
           }
@@ -10688,8 +10605,7 @@
           "lowerCap",
           "upperCap",
           "rate",
-          "fixedAmount",
-          "slabUid"
+          "fixedAmount"
         ],
         "properties": {
           "slabId": {
@@ -10713,9 +10629,6 @@
             "type": "string",
             "pattern": "^\\d*$",
             "example": "123456789"
-          },
-          "slabUid": {
-            "type": "string"
           },
           "createdAt": {
             "type": "string",
@@ -12083,9 +11996,6 @@
                                   "accountIBAN": {
                                     "type": "string"
                                   },
-                                  "slug": {
-                                    "type": "string"
-                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -12137,9 +12047,6 @@
                             }
                           }
                         }
-                      },
-                      "empNoUrl": {
-                        "type": "string"
                       },
                       "loans": {
                         "type": "object",
@@ -12243,9 +12150,6 @@
                                                 "type": "string",
                                                 "pattern": "^\\d*$",
                                                 "example": "123456789"
-                                              },
-                                              "slabUid": {
-                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",

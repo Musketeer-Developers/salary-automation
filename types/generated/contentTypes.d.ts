@@ -808,8 +808,6 @@ export interface ApiBankDetailBankDetail extends Schema.CollectionType {
     bankName: Attribute.String & Attribute.Required;
     accountTitle: Attribute.String & Attribute.Required;
     accountIBAN: Attribute.String & Attribute.Required;
-    slug: Attribute.UID<'api::bank-detail.bank-detail', 'accountIBAN'> &
-      Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -921,8 +919,6 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
       'oneToOne',
       'api::bank-detail.bank-detail'
     >;
-    empNoUrl: Attribute.UID<'api::employee.employee', 'empNo'> &
-      Attribute.Required;
     loans: Attribute.Relation<
       'api::employee.employee',
       'oneToMany',
@@ -1114,11 +1110,6 @@ export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
       'manyToOne',
       'api::employee.employee'
     >;
-    month: Attribute.Relation<
-      'api::monthly-salary.monthly-salary',
-      'oneToOne',
-      'api::month-data.month-data'
-    >;
     basicSalary: Attribute.BigInteger & Attribute.Required;
     grossSalaryEarned: Attribute.BigInteger &
       Attribute.Required &
@@ -1190,7 +1181,6 @@ export interface ApiTaxSlabTaxSlab extends Schema.CollectionType {
     upperCap: Attribute.BigInteger & Attribute.Required;
     rate: Attribute.Float & Attribute.Required;
     fixedAmount: Attribute.BigInteger & Attribute.Required;
-    slabUid: Attribute.UID & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
