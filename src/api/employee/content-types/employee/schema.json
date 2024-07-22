@@ -72,6 +72,10 @@
       "target": "api::bank-detail.bank-detail",
       "mappedBy": "emp_no"
     },
+    "empNoUrl": {
+      "type": "uid",
+      "required": true
+    },
     "loans": {
       "type": "relation",
       "relation": "oneToMany",
