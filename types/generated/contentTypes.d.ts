@@ -933,9 +933,10 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
     phoneNo: Attribute.String &
       Attribute.Required &
       Attribute.SetMinMaxLength<{
-        maxLength: 12;
+        maxLength: 13;
       }>;
     email: Attribute.Email & Attribute.Required;
+    image: Attribute.Media<'images'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
