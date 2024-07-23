@@ -18,11 +18,6 @@
       "target": "api::employee.employee",
       "inversedBy": "monthly_salaries"
     },
-    "month": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::month-data.month-data"
-    },
     "basicSalary": {
       "type": "biginteger",
       "required": true

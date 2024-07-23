@@ -30,11 +30,6 @@
       "type": "string",
       "required": true,
       "unique": false
-    },
-    "slug": {
-      "type": "uid",
-      "targetField": "accountIBAN",
-      "required": true
     }
   }
 }

@@ -72,11 +72,6 @@
       "target": "api::bank-detail.bank-detail",
       "mappedBy": "emp_no"
     },
-    "empNoUrl": {
-      "type": "uid",
-      "targetField": "empNo",
-      "required": true
-    },
     "loans": {
       "type": "relation",
       "relation": "oneToMany",
@@ -88,6 +83,18 @@
       "relation": "oneToOne",
       "target": "api::with-holding-tax.with-holding-tax",
       "inversedBy": "emp_no"
+    },
+    "lastWorkingDay": {
+      "type": "date"
+    },
+    "phoneNo": {
+      "type": "string",
+      "maxLength": 12,
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
     }
   }
 }
