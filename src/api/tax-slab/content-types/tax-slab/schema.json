@@ -32,10 +32,6 @@
     "fixedAmount": {
       "type": "biginteger",
       "required": true
-    },
-    "slabUid": {
-      "type": "uid",
-      "required": true
     }
   }
 }

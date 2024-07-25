@@ -12,11 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "empNo": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::employee.employee"
-    },
     "loanTaken": {
       "type": "integer",
       "required": true
