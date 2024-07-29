@@ -35,6 +35,25 @@ module.exports = createCoreController(
           }
         );
         //CREATE MONTHLY SALARY FOR EACH EMPLOYEE
+        const monthEnum = {
+          january: 1,
+          february: 2,
+          march: 3,
+          april: 4,
+          may: 5,
+          june: 6,
+          july: 7,
+          august: 8,
+          september: 9,
+          october: 10,
+          november: 11,
+          december: 12,
+        };
+        const workingDates = getWorkingDaysDatesForMonth(
+          req.year,
+          monthEnum[req.month],
+          1
+        );
         for (let i = 0; i < employeeIDs.length; i++) {
           const employeeSalaryEntity = await strapi.entityService.create(
             "api::monthly-salary.monthly-salary",
@@ -59,21 +78,44 @@ module.exports = createCoreController(
               },
             }
           );
-        }
-        //ADD 2 LEAVES FOR EACH EMPLOYEE
-        for (let i = 0; i < employeeIDs.length; i++) {
-          await strapi.entityService.update(
-            "api::employee.employee",
-            employeeIDs[i].id,
-            {
-              data: {
-                leavesRemaining: employeeIDs[i].leavesRemaining + 2,
-              },
-            }
-          );
-        }
+          //CREATE ATTENDANCE FOR EACH EMPLOYEE
+          for (let j = 0; j < workingDates.length; j++) {
+            const dailyWork = await strapi.entityService.create(
+              "api::daily-work.daily-work",
+              {
+                data: {
+                  empNo: employeeIDs[i].id,
+                  workDate: new Date(
+                    req.year,
+                    monthEnum[req.month] - 1,
+                    workingDates[j]
+                  ),
+                  hubstaffHours: 0,
+                  manualHours: 0,
+                  isHoliday: false,
+                  isLate: false,
+                  isLeave: false,
+                  salaryMonth: employeeSalaryEntity.id,
+                  publishedAt: Date.now(),
+                },
+              }
+            );
+          }
+          //ADD 2 LEAVES FOR EACH EMPLOYEE
+          for (let i = 0; i < employeeIDs.length; i++) {
+            await strapi.entityService.update(
+              "api::employee.employee",
+              employeeIDs[i].id,
+              {
+                data: {
+                  leavesRemaining: employeeIDs[i].leavesRemaining + 2,
+                },
+              }
+            );
+          }
 
-        ctx.body = employeeIDs;
+          ctx.body = employeeIDs;
+        }
       } catch (error) {
         console.log("error", error);
         ctx.body = "Error222";
@@ -81,3 +123,23 @@ module.exports = createCoreController(
     },
   })
 );
+
+function getWorkingDaysDatesForMonth(year, month, day = 1, workingDays = 0) {
+  month = month - 1;
+  let startDate = new Date(year, month, day);
+  let endDate = new Date(year, month + 1, 0);
+  let currentDate = startDate;
+  let dateCollection = [];
+  let currentDatecount = 1;
+  while (currentDate <= endDate) {
+    let weekDay = currentDate.getDay();
+
+    if (weekDay !== 0 && weekDay !== 6) {
+      workingDays++;
+      dateCollection.push(currentDatecount);
+    }
+    currentDatecount++;
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dateCollection;
+}
