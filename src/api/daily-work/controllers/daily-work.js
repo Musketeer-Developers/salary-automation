@@ -1,6 +1,8 @@
 "use strict";
+"use strict";
 
 /**
+ * daily-work custom controller
  * daily-work custom controller
  */
 
