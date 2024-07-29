@@ -53,6 +53,9 @@
       "relation": "oneToMany",
       "target": "api::monthly-salary.monthly-salary",
       "mappedBy": "month_data"
+    },
+    "holidayCount": {
+      "type": "integer"
     }
   }
 }

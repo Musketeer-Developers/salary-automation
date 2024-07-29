@@ -1078,6 +1078,7 @@ export interface ApiMonthDataMonthData extends Schema.CollectionType {
       'oneToMany',
       'api::monthly-salary.monthly-salary'
     >;
+    holidayCount: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1149,6 +1150,8 @@ export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
       'manyToOne',
       'api::month-data.month-data'
     >;
+    absentCount: Attribute.Integer;
+    lateCount: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

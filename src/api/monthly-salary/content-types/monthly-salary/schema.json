@@ -91,6 +91,12 @@
       "relation": "manyToOne",
       "target": "api::month-data.month-data",
       "inversedBy": "monthly_salaries"
+    },
+    "absentCount": {
+      "type": "integer"
+    },
+    "lateCount": {
+      "type": "integer"
     }
   }
 }
