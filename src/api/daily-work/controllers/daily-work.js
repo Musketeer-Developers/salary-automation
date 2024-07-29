@@ -11,16 +11,11 @@ module.exports = createCoreController(
   ({ strapi }) => ({
     async bulkCreateDailyWork(ctx) {
       try {
-        const { date, dailyWorks } = ctx.request.body;
+        const data = ctx.request.body;
 
-        // Extract month and year from date
-        const dateObj = new Date(date);
-        const month = dateObj.toLocaleString('default', { month: 'long' }).toLowerCase();
-        const year = dateObj.getFullYear();
-
-        // Loop through each daily-work object
-        for (const dailyWork of dailyWorks) {
-          const employeeName = dailyWork.employeeName;
+        // Loop through each employee data object
+        for (const employeeData of data) {
+          const employeeName = employeeData.employeeName;
 
           // Find the employee by name
           const employee = await strapi.entityService.findMany('api::employee.employee', {
@@ -34,38 +29,48 @@ module.exports = createCoreController(
 
           const employeeId = employee[0].id;
 
-          // Find the corresponding monthly-salary entry for the employee
-          const monthlySalary = await strapi.entityService.findMany('api::monthly-salary.monthly-salary', {
-            filters: {
-              employee: employeeId,
-              month_data: {
-                month: month,
-                year: year
-              }
-            },
-            fields: ['id']
-          });
+          // Loop through each daily work entry for the employee
+          for (const dailyWork of employeeData.dailyWorkEntries) {
+            const date = dailyWork.date;
 
-          if (!monthlySalary || monthlySalary.length === 0) {
-            continue; // Skip if monthly-salary entry not found
+            // Extract month and year from date
+            const dateObj = new Date(date);
+            const month = dateObj.toLocaleString('default', { month: 'long' }).toLowerCase();
+            const year = dateObj.getFullYear();
+
+            // Find the corresponding monthly-salary entry for the employee
+            const monthlySalary = await strapi.entityService.findMany('api::monthly-salary.monthly-salary', {
+              filters: {
+                employee: employeeId,
+                month_data: {
+                  month: month,
+                  year: year
+                }
+              },
+              fields: ['id']
+            });
+
+            if (!monthlySalary || monthlySalary.length === 0) {
+              continue; // Skip if monthly-salary entry not found
+            }
+
+            const salaryMonthId = monthlySalary[0].id;
+
+            // Create the daily-work entry
+            await strapi.entityService.create('api::daily-work.daily-work', {
+              data: {
+                empNo: employeeId,
+                workDate: date,
+                hubstaffHours: dailyWork.hubstaffHours,
+                manualHours: dailyWork.manualHours || 0,
+                isHoliday: dailyWork.isHoliday || false,
+                isLeave: dailyWork.isLeave || false,
+                isLate: dailyWork.isLate || false,
+                salaryMonth: salaryMonthId,
+                publishedAt: Date.now(),
+              },
+            });
           }
-
-          const salaryMonthId = monthlySalary[0].id;
-
-          // Create the daily-work entry
-          await strapi.entityService.create('api::daily-work.daily-work', {
-            data: {
-              empNo: employeeId,
-              workDate: date,
-              hubstaffHours: dailyWork.hubstaffHours,
-              manualHours: dailyWork.manualHours || 0,
-              isHoliday: dailyWork.isHoliday || false,
-              isLeave: dailyWork.isLeave || false,
-              isLate: dailyWork.isLate || false,
-              salaryMonth: salaryMonthId,
-              publishedAt: Date.now(),
-            },
-          });
         }
 
         ctx.body = { message: "Daily work entries created successfully" };
