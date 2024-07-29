@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-07-23T12:06:23.844Z"
+    "x-generation-date": "2024-07-22T11:22:45.676Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -324,6 +324,23 @@
                                               "attributes": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "empNo": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "data": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "number"
+                                                          },
+                                                          "attributes": {
+                                                            "type": "object",
+                                                            "properties": {}
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  },
                                                   "loanTaken": {
                                                     "type": "integer"
                                                   },
@@ -1349,17 +1366,6 @@
                             }
                           }
                         }
-                      },
-                      "lastWorkingDay": {
-                        "type": "string",
-                        "format": "date"
-                      },
-                      "phoneNo": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string",
-                        "format": "email"
                       },
                       "createdAt": {
                         "type": "string",
@@ -1751,6 +1757,23 @@
                                               "attributes": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "empNo": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "data": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "number"
+                                                          },
+                                                          "attributes": {
+                                                            "type": "object",
+                                                            "properties": {}
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  },
                                                   "loanTaken": {
                                                     "type": "integer"
                                                   },
@@ -2777,17 +2800,6 @@
                           }
                         }
                       },
-                      "lastWorkingDay": {
-                        "type": "string",
-                        "format": "date"
-                      },
-                      "phoneNo": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string",
-                        "format": "email"
-                      },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -2964,9 +2976,7 @@
               "employementStatus",
               "grossSalary",
               "leavesRemaining",
-              "salarySlipRequired",
-              "phoneNo",
-              "email"
+              "salarySlipRequired"
             ],
             "type": "object",
             "properties": {
@@ -3059,17 +3069,6 @@
                   }
                 ],
                 "example": "string or id"
-              },
-              "lastWorkingDay": {
-                "type": "string",
-                "format": "date"
-              },
-              "phoneNo": {
-                "type": "string"
-              },
-              "email": {
-                "type": "string",
-                "format": "email"
               }
             }
           }
@@ -3132,9 +3131,7 @@
           "employementStatus",
           "grossSalary",
           "leavesRemaining",
-          "salarySlipRequired",
-          "phoneNo",
-          "email"
+          "salarySlipRequired"
         ],
         "properties": {
           "empNo": {
@@ -3619,6 +3616,23 @@
                                               "attributes": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "empNo": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "data": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "number"
+                                                          },
+                                                          "attributes": {
+                                                            "type": "object",
+                                                            "properties": {}
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  },
                                                   "loanTaken": {
                                                     "type": "integer"
                                                   },
@@ -3888,17 +3902,6 @@
                                           }
                                         }
                                       }
-                                    },
-                                    "lastWorkingDay": {
-                                      "type": "string",
-                                      "format": "date"
-                                    },
-                                    "phoneNo": {
-                                      "type": "string"
-                                    },
-                                    "email": {
-                                      "type": "string",
-                                      "format": "email"
                                     },
                                     "createdAt": {
                                       "type": "string",
@@ -4469,17 +4472,6 @@
               }
             }
           },
-          "lastWorkingDay": {
-            "type": "string",
-            "format": "date"
-          },
-          "phoneNo": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -4564,6 +4556,17 @@
             ],
             "type": "object",
             "properties": {
+              "empNo": {
+                "oneOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "example": "string or id"
+              },
               "loanTaken": {
                 "type": "integer"
               },
@@ -4646,20 +4649,7 @@
           "monthlyAmount"
         ],
         "properties": {
-          "loanTaken": {
-            "type": "integer"
-          },
-          "remainingAmount": {
-            "type": "string",
-            "pattern": "^\\d*$",
-            "example": "123456789"
-          },
-          "monthlyAmount": {
-            "type": "string",
-            "pattern": "^\\d*$",
-            "example": "123456789"
-          },
-          "employee": {
+          "empNo": {
             "type": "object",
             "properties": {
               "data": {
@@ -4805,6 +4795,23 @@
                                               "attributes": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "empNo": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "data": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "number"
+                                                          },
+                                                          "attributes": {
+                                                            "type": "object",
+                                                            "properties": {}
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  },
                                                   "loanTaken": {
                                                     "type": "integer"
                                                   },
@@ -5831,17 +5838,6 @@
                           }
                         }
                       },
-                      "lastWorkingDay": {
-                        "type": "string",
-                        "format": "date"
-                      },
-                      "phoneNo": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string",
-                        "format": "email"
-                      },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -5889,6 +5885,36 @@
                         }
                       }
                     }
+                  }
+                }
+              }
+            }
+          },
+          "loanTaken": {
+            "type": "integer"
+          },
+          "remainingAmount": {
+            "type": "string",
+            "pattern": "^\\d*$",
+            "example": "123456789"
+          },
+          "monthlyAmount": {
+            "type": "string",
+            "pattern": "^\\d*$",
+            "example": "123456789"
+          },
+          "employee": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number"
+                  },
+                  "attributes": {
+                    "type": "object",
+                    "properties": {}
                   }
                 }
               }
@@ -6504,6 +6530,23 @@
                                             "attributes": {
                                               "type": "object",
                                               "properties": {
+                                                "empNo": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "data": {
+                                                      "type": "object",
+                                                      "properties": {
+                                                        "id": {
+                                                          "type": "number"
+                                                        },
+                                                        "attributes": {
+                                                          "type": "object",
+                                                          "properties": {}
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                },
                                                 "loanTaken": {
                                                   "type": "integer"
                                                 },
@@ -6773,17 +6816,6 @@
                                         }
                                       }
                                     }
-                                  },
-                                  "lastWorkingDay": {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  "phoneNo": {
-                                    "type": "string"
-                                  },
-                                  "email": {
-                                    "type": "string",
-                                    "format": "email"
                                   },
                                   "createdAt": {
                                     "type": "string",
@@ -7984,6 +8016,23 @@
                                               "attributes": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "empNo": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "data": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "number"
+                                                          },
+                                                          "attributes": {
+                                                            "type": "object",
+                                                            "properties": {}
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  },
                                                   "loanTaken": {
                                                     "type": "integer"
                                                   },
@@ -8253,17 +8302,6 @@
                                           }
                                         }
                                       }
-                                    },
-                                    "lastWorkingDay": {
-                                      "type": "string",
-                                      "format": "date"
-                                    },
-                                    "phoneNo": {
-                                      "type": "string"
-                                    },
-                                    "email": {
-                                      "type": "string",
-                                      "format": "email"
                                     },
                                     "createdAt": {
                                       "type": "string",
@@ -9184,6 +9222,23 @@
                                               "attributes": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "empNo": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "data": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "number"
+                                                          },
+                                                          "attributes": {
+                                                            "type": "object",
+                                                            "properties": {}
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  },
                                                   "loanTaken": {
                                                     "type": "integer"
                                                   },
@@ -10209,17 +10264,6 @@
                             }
                           }
                         }
-                      },
-                      "lastWorkingDay": {
-                        "type": "string",
-                        "format": "date"
-                      },
-                      "phoneNo": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string",
-                        "format": "email"
                       },
                       "createdAt": {
                         "type": "string",
@@ -11168,6 +11212,23 @@
                                               "attributes": {
                                                 "type": "object",
                                                 "properties": {
+                                                  "empNo": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "data": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "number"
+                                                          },
+                                                          "attributes": {
+                                                            "type": "object",
+                                                            "properties": {}
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  },
                                                   "loanTaken": {
                                                     "type": "integer"
                                                   },
@@ -12193,17 +12254,6 @@
                             }
                           }
                         }
-                      },
-                      "lastWorkingDay": {
-                        "type": "string",
-                        "format": "date"
-                      },
-                      "phoneNo": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string",
-                        "format": "email"
                       },
                       "createdAt": {
                         "type": "string",
