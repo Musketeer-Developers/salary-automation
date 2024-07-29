@@ -933,9 +933,10 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
     phoneNo: Attribute.String &
       Attribute.Required &
       Attribute.SetMinMaxLength<{
-        maxLength: 12;
+        maxLength: 13;
       }>;
     email: Attribute.Email & Attribute.Required;
+    image: Attribute.Media<'images'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1077,6 +1078,7 @@ export interface ApiMonthDataMonthData extends Schema.CollectionType {
       'oneToMany',
       'api::monthly-salary.monthly-salary'
     >;
+    holidayCount: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1148,6 +1150,8 @@ export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
       'manyToOne',
       'api::month-data.month-data'
     >;
+    absentCount: Attribute.Integer;
+    lateCount: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
