@@ -7,7 +7,7 @@ module.exports = ({ env }) => ({
       port: env.int("DATABASE_PORT", 5432),
       database: env("DATABASE_NAME", "salary-automation"),
       user: env("DATABASE_USERNAME", "postgres"),
-      password: env("DATABASE_PASSWORD", "12345678"),
+      password: env("DATABASE_PASSWORD", "admin"),
     },
     debug: false,
   },
