@@ -53,7 +53,25 @@ module.exports = createCoreController(
           }
         );
         //CREATE MONTHLY SALARY FOR EACH EMPLOYEE
-
+        const monthEnum = {
+          january: 1,
+          february: 2,
+          march: 3,
+          april: 4,
+          may: 5,
+          june: 6,
+          july: 7,
+          august: 8,
+          september: 9,
+          october: 10,
+          november: 11,
+          december: 12,
+        };
+        const workingDates = getWorkingDaysDatesForMonth(
+          req.year,
+          monthEnum[req.month],
+          1
+        );
         for (let i = 0; i < employeeIDs.length; i++) {
           const employeeSalaryEntity = await strapi.entityService.create(
             "api::monthly-salary.monthly-salary",
@@ -79,8 +97,7 @@ module.exports = createCoreController(
             }
           );
           //CREATE ATTENDANCE FOR EACH EMPLOYEE
-
-          for (let j = 0; j < workingDates.dates.length; j++) {
+          for (let j = 0; j < workingDates.length; j++) {
             const dailyWork = await strapi.entityService.create(
               "api::daily-work.daily-work",
               {
@@ -89,7 +106,7 @@ module.exports = createCoreController(
                   workDate: new Date(
                     req.year,
                     monthEnum[req.month] - 1,
-                    workingDates.dates[j]
+                    workingDates[j]
                   ),
                   hubstaffHours: 0,
                   manualHours: 0,
@@ -117,93 +134,10 @@ module.exports = createCoreController(
 
           ctx.body = employeeIDs;
         }
-          ctx.body = employeeIDs;
-        }
       } catch (error) {
         console.log("error", error);
         ctx.body = "Error222";
       }
-    },
-    async addHoliday(ctx) {
-      const req = ctx.request.body;
-      //separate 2010-08-05
-      const dateArray = req.date.split("-");
-      const day = parseInt(dateArray[2]);
-      const month = parseInt(dateArray[1]);
-      const year = parseInt(dateArray[0]);
-      const dateObj = new Date(year, month - 1, day);
-      //get month name in lowercase
-      const monthEnum = {
-        1: "january",
-        2: "february",
-        3: "march",
-        4: "april",
-        5: "may",
-        6: "june",
-        7: "july",
-        8: "august",
-        9: "september",
-        10: "october",
-        11: "november",
-        12: "december",
-      };
-      const monthName = monthEnum[month];
-      //find month data
-      const monthData = await strapi.entityService.findMany(
-        "api::month-data.month-data",
-        {
-          filters: {
-            monthIdentifier: monthName + year,
-          },
-        }
-      ); //returns array with one object
-      //add in holiday count
-      const updatedMonthData = await strapi.entityService.update(
-        "api::month-data.month-data",
-        monthData[0].id,
-        {
-          data: {
-            holidayCount: monthData[0].holidayCount + 1,
-          },
-        }
-      );
-      //find all monthly salary ids for the month
-      const monthlySalaries = await strapi.entityService.findMany(
-        "api::monthly-salary.monthly-salary",
-        {
-          filters: {
-            month_data: {
-              id: monthData[0].id,
-            },
-          },
-        }
-      );
-
-      for (const salary of monthlySalaries) {
-        const dailyWork = await strapi.entityService.findMany(
-          "api::daily-work.daily-work",
-          {
-            filters: {
-              salaryMonth: {
-                id: salary.id,
-              },
-              workDate: dateObj,
-            },
-          }
-        );
-        if (dailyWork.length > 0) {
-          await strapi.entityService.update(
-            "api::daily-work.daily-work",
-            dailyWork[0].id,
-            {
-              data: {
-                isHoliday: true,
-              },
-            }
-          );
-        }
-      }
-      ctx.body = { data: "Holiday added for " + req.date };
     },
   })
 );
@@ -225,5 +159,5 @@ function getWorkingDaysDatesForMonth(year, month, day = 1, workingDays = 0) {
     currentDatecount++;
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  return { dates: dateCollection, count: workingDays };
+  return dateCollection;
 }
