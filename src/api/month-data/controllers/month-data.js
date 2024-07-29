@@ -124,6 +124,49 @@ module.exports = createCoreController(
         ctx.body = "Error222";
       }
     },
+    async addHoliday(ctx) {
+      const req = ctx.request.body;
+      //separate 2010-08-05
+      const dateArray = req.date.split("-");
+      const day = parseInt(dateArray[2]);
+      const month = parseInt(dateArray[1]);
+      const year = parseInt(dateArray[0]);
+      //get month name in lowercase
+      const monthEnum = {
+        1: "january",
+        2: "february",
+        3: "march",
+        4: "april",
+        5: "may",
+        6: "june",
+        7: "july",
+        8: "august",
+        9: "september",
+        10: "october",
+        11: "november",
+        12: "december",
+      };
+      const monthName = monthEnum[month];
+      //find month data
+      const monthData = await strapi.entityService.findMany(
+        "api::month-data.month-data",
+        {
+          filters: {
+            monthIdentifier: monthName + year,
+          },
+        }
+      ); //returns array with one object
+      //add in holiday count
+      const updatedMonthData = await strapi.entityService.update(
+        "api::month-data.month-data",
+        monthData[0].id,
+        {
+          data: {
+            holda: monthData[0].totalDays + 1,
+          },
+        }
+      );
+    },
   })
 );
 
