@@ -53,25 +53,7 @@ module.exports = createCoreController(
           }
         );
         //CREATE MONTHLY SALARY FOR EACH EMPLOYEE
-        const monthEnum = {
-          january: 1,
-          february: 2,
-          march: 3,
-          april: 4,
-          may: 5,
-          june: 6,
-          july: 7,
-          august: 8,
-          september: 9,
-          october: 10,
-          november: 11,
-          december: 12,
-        };
-        const workingDates = getWorkingDaysDatesForMonth(
-          req.year,
-          monthEnum[req.month],
-          1
-        );
+
         for (let i = 0; i < employeeIDs.length; i++) {
           const employeeSalaryEntity = await strapi.entityService.create(
             "api::monthly-salary.monthly-salary",
@@ -97,7 +79,8 @@ module.exports = createCoreController(
             }
           );
           //CREATE ATTENDANCE FOR EACH EMPLOYEE
-          for (let j = 0; j < workingDates.length; j++) {
+
+          for (let j = 0; j < workingDates.dates.length; j++) {
             const dailyWork = await strapi.entityService.create(
               "api::daily-work.daily-work",
               {
@@ -106,7 +89,7 @@ module.exports = createCoreController(
                   workDate: new Date(
                     req.year,
                     monthEnum[req.month] - 1,
-                    workingDates[j]
+                    workingDates.dates[j]
                   ),
                   hubstaffHours: 0,
                   manualHours: 0,
@@ -159,5 +142,5 @@ function getWorkingDaysDatesForMonth(year, month, day = 1, workingDays = 0) {
     currentDatecount++;
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  return dateCollection;
+  return { dates: dateCollection, count: workingDays };
 }
