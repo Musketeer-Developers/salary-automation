@@ -129,6 +129,7 @@ module.exports = createCoreController(
       const day = parseInt(dateArray[2]);
       const month = parseInt(dateArray[1]);
       const year = parseInt(dateArray[0]);
+      const dateObj = new Date(year, month - 1, day);
       //get month name in lowercase
       const monthEnum = {
         1: "january",
@@ -160,10 +161,47 @@ module.exports = createCoreController(
         monthData[0].id,
         {
           data: {
-            holda: monthData[0].totalDays + 1,
+            holidayCount: monthData[0].holidayCount + 1,
           },
         }
       );
+      //find all monthly salary ids for the month
+      const monthlySalaries = await strapi.entityService.findMany(
+        "api::monthly-salary.monthly-salary",
+        {
+          filters: {
+            month_data: {
+              id: monthData[0].id,
+            },
+          },
+        }
+      );
+
+      for (const salary of monthlySalaries) {
+        const dailyWork = await strapi.entityService.findMany(
+          "api::daily-work.daily-work",
+          {
+            filters: {
+              salaryMonth: {
+                id: salary.id,
+              },
+              workDate: dateObj,
+            },
+          }
+        );
+        if (dailyWork.length > 0) {
+          await strapi.entityService.update(
+            "api::daily-work.daily-work",
+            dailyWork[0].id,
+            {
+              data: {
+                isHoliday: true,
+              },
+            }
+          );
+        }
+      }
+      ctx.body = { data: "Holiday added for " + req.date };
     },
   })
 );
