@@ -89,12 +89,19 @@
     },
     "phoneNo": {
       "type": "string",
-      "maxLength": 12,
+      "maxLength": 13,
       "required": true
     },
     "email": {
       "type": "email",
       "required": true
+    },
+    "image": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
     }
   }
 }
