@@ -9,5 +9,14 @@ module.exports = {
         auth: false,
       },
     },
+    {
+      method: "POST",
+      path: "/month-data/add-holiday",
+      handler: "month-data.addHoliday",
+      config: {
+        policies: [],
+        auth: false,
+      },
+    },
   ],
 };
