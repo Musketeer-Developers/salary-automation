@@ -1150,8 +1150,8 @@ export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
       'manyToOne',
       'api::month-data.month-data'
     >;
-    absentCount: Attribute.Integer;
-    lateCount: Attribute.Integer;
+    absentCount: Attribute.Integer & Attribute.DefaultTo<0>;
+    lateCount: Attribute.Integer & Attribute.DefaultTo<0>;
     netSalary: Attribute.BigInteger;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
