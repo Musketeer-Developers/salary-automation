@@ -113,3 +113,8 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
+config/database.js
+src/extensions/documentation/documentation/1.0.0/full_documentation.json
+src/extensions/documentation/public/index.html
+src/extensions/documentation/documentation/1.0.0/full_documentation.json
+config/database.js
