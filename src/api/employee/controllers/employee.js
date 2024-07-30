@@ -91,7 +91,7 @@ module.exports = createCoreController(
         }
       );
 
-      ctx.body = { result, wht: whtData };
+      ctx.body = { data: result.data, wht: whtData };
     },
   })
 );
