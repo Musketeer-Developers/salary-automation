@@ -38,23 +38,39 @@ module.exports = createCoreController(
           monthEnum[req.month],
           0
         ).getDate();
-        //CREATE NEW MONTH DATA
-        const monthData = await strapi.entityService.create(
+
+        // Check if month data already exists
+        const existingMonthData = await strapi.entityService.findMany(
           "api::month-data.month-data",
           {
-            data: {
-              month: req.month,
-              year: req.year,
+            filters: {
               monthIdentifier: req.month + req.year,
-              totalDays: totalDaysInMonth,
-              workingDays: workingDates.count,
-              publishedAt: Date.now(),
             },
           }
         );
 
-        //GET ALL EMPLOYEES
-        const employeeIDs = await strapi.entityService.findMany(
+        let monthData;
+        if (existingMonthData.length > 0) {
+          monthData = existingMonthData[0];
+        } else {
+          // Create new month data if it doesn't exist
+          monthData = await strapi.entityService.create(
+            "api::month-data.month-data",
+            {
+              data: {
+                month: req.month,
+                year: req.year,
+                monthIdentifier: req.month + req.year,
+                totalDays: totalDaysInMonth,
+                workingDays: workingDates.count,
+                publishedAt: Date.now(),
+              },
+            }
+          );
+        }
+
+        // Get all employees
+        const employees = await strapi.entityService.findMany(
           "api::employee.employee",
           {
             fields: ["id", "grossSalary", "leavesRemaining"],
@@ -62,76 +78,80 @@ module.exports = createCoreController(
           }
         );
 
-        //CREATE MONTHLY SALARY FOR EACH EMPLOYEE
-
-        for (let i = 0; i < employeeIDs.length; i++) {
-          //find medical allowance for employee from wht
-
-          const employeeSalaryEntity = await strapi.entityService.create(
+        for (const employee of employees) {
+          // Check if monthly salary entry already exists for the employee
+          const existingMonthlySalary = await strapi.entityService.findMany(
             "api::monthly-salary.monthly-salary",
             {
-              data: {
-                employee: employeeIDs[i].id,
-
-                basicSalary: employeeIDs[i].grossSalary,
-                grossSalaryEarned: 0,
-                medicalAllowance: 0,
-                paidSalary: 0,
-                //SET MONTHLY RATE BASED ON GROSS SALARY AND WORKING DAYS
-                monthlyRate:
-                  employeeIDs[i].grossSalary / (workingDates.count * 8),
-                TotalHoursMonth: workingDates.count * 8,
-                hoursLogged: 0,
-                //WTH PENDING MAKING IT 0 FOR NOW
-                WTH: 0,
-                miscAdjustments: 0,
-                loanDeduction: 0,
+              filters: {
+                employee: employee.id,
                 month_data: monthData.id,
-                publishedAt: Date.now(),
               },
             }
           );
-          //CREATE ATTENDANCE FOR EACH EMPLOYEE
 
-          for (let j = 1; j <= totalDaysInMonth; j++) {
-            const dailyWork = await strapi.entityService.create(
-              "api::daily-work.daily-work",
+          if (existingMonthlySalary.length === 0) {
+            // Create monthly salary for employee if it doesn't exist
+            const employeeSalaryEntity = await strapi.entityService.create(
+              "api::monthly-salary.monthly-salary",
               {
                 data: {
-                  empNo: employeeIDs[i].id,
-                  workDate: new Date(req.year, monthEnum[req.month] - 1, j),
-                  hubstaffHours: 0,
-                  manualHours: 0,
-                  isHoliday: false,
-                  isLate: false,
-                  isLeave: false,
-                  salaryMonth: employeeSalaryEntity.id,
+                  employee: employee.id,
+                  basicSalary: employee.grossSalary,
+                  grossSalaryEarned: 0,
+                  medicalAllowance: 0,
+                  paidSalary: 0,
+                  monthlyRate: employee.grossSalary / (workingDates.count * 8),
+                  TotalHoursMonth: workingDates.count * 8,
+                  hoursLogged: 0,
+                  WTH: 0,
+                  miscAdjustments: 0,
+                  loanDeduction: 0,
+                  month_data: monthData.id,
                   publishedAt: Date.now(),
                 },
               }
             );
-          }
-          //ADD 2 LEAVES FOR EACH EMPLOYEE
-          for (let i = 0; i < employeeIDs.length; i++) {
+
+            // Create daily work entries for the employee
+            for (let j = 1; j <= totalDaysInMonth; j++) {
+              await strapi.entityService.create(
+                "api::daily-work.daily-work",
+                {
+                  data: {
+                    empNo: employee.id,
+                    workDate: new Date(req.year, monthEnum[req.month] - 1, j),
+                    hubstaffHours: 0,
+                    manualHours: 0,
+                    isHoliday: false,
+                    isLate: false,
+                    isLeave: false,
+                    salaryMonth: employeeSalaryEntity.id,
+                    publishedAt: Date.now(),
+                  },
+                }
+              );
+            }
+
+            // Add 2 leaves for each employee
             await strapi.entityService.update(
               "api::employee.employee",
-              employeeIDs[i].id,
+              employee.id,
               {
                 data: {
-                  leavesRemaining: employeeIDs[i].leavesRemaining + 2,
+                  leavesRemaining: employee.leavesRemaining + 2,
                 },
               }
             );
           }
-
-          ctx.body = employeeIDs;
         }
-        ctx.body = employeeIDs;
+        ctx.body = { message: "Month data initialized" };
       } catch (error) {
         console.log("error", error);
-        ctx.body = "error in making new month data";
+        ctx.body = { message: "Error in making new month data" };
       }
     },
+    
     async addHoliday(ctx) {
       const req = ctx.request.body;
       //separate 2010-08-05
