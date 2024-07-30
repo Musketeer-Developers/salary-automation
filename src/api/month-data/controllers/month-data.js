@@ -31,6 +31,7 @@ module.exports = createCoreController(
           monthEnum[req.month],
           1
         );
+
         //CREATE NEW MONTH DATA
         const monthData = await strapi.entityService.create(
           "api::month-data.month-data",
@@ -45,16 +46,21 @@ module.exports = createCoreController(
             },
           }
         );
+
         //GET ALL EMPLOYEES
         const employeeIDs = await strapi.entityService.findMany(
           "api::employee.employee",
           {
             fields: ["id", "grossSalary", "leavesRemaining"],
+            populate: ["wht"],
           }
         );
+
         //CREATE MONTHLY SALARY FOR EACH EMPLOYEE
 
         for (let i = 0; i < employeeIDs.length; i++) {
+          //find medical allowance for employee from wht
+
           const employeeSalaryEntity = await strapi.entityService.create(
             "api::monthly-salary.monthly-salary",
             {
@@ -66,7 +72,8 @@ module.exports = createCoreController(
                 medicalAllowance: 0,
                 paidSalary: 0,
                 //SET MONTHLY RATE BASED ON GROSS SALARY AND WORKING DAYS
-                monthlyRate: employeeIDs[i].grossSalary / workingDates.count,
+                monthlyRate:
+                  employeeIDs[i].grossSalary / (workingDates.count * 8),
                 TotalHoursMonth: workingDates.count * 8,
                 hoursLogged: 0,
                 //WTH PENDING MAKING IT 0 FOR NOW
