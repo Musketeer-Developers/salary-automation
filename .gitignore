@@ -114,3 +114,4 @@ build
 .strapi-updater.json
 .strapi-cloud.json
 
+src/extensions/documentation/documentation/1.0.0/full_documentation.json
