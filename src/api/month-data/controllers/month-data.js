@@ -31,7 +31,13 @@ module.exports = createCoreController(
           monthEnum[req.month],
           1
         );
-
+        const year = req.year;
+        const month = req.month;
+        const totalDaysInMonth = new Date(
+          req.year,
+          monthEnum[req.month],
+          0
+        ).getDate();
         //CREATE NEW MONTH DATA
         const monthData = await strapi.entityService.create(
           "api::month-data.month-data",
@@ -40,7 +46,7 @@ module.exports = createCoreController(
               month: req.month,
               year: req.year,
               monthIdentifier: req.month + req.year,
-              totalDays: req.totalDays,
+              totalDays: totalDaysInMonth,
               workingDays: workingDates.count,
               publishedAt: Date.now(),
             },
@@ -87,17 +93,13 @@ module.exports = createCoreController(
           );
           //CREATE ATTENDANCE FOR EACH EMPLOYEE
 
-          for (let j = 0; j < workingDates.dates.length; j++) {
+          for (let j = 1; j <= totalDaysInMonth; j++) {
             const dailyWork = await strapi.entityService.create(
               "api::daily-work.daily-work",
               {
                 data: {
                   empNo: employeeIDs[i].id,
-                  workDate: new Date(
-                    req.year,
-                    monthEnum[req.month] - 1,
-                    workingDates.dates[j]
-                  ),
+                  workDate: new Date(req.year, monthEnum[req.month] - 1, j),
                   hubstaffHours: 0,
                   manualHours: 0,
                   isHoliday: false,
@@ -124,11 +126,10 @@ module.exports = createCoreController(
 
           ctx.body = employeeIDs;
         }
-          ctx.body = employeeIDs;
-        }
+        ctx.body = employeeIDs;
       } catch (error) {
         console.log("error", error);
-        ctx.body = "Error222";
+        ctx.body = "error in making new month data";
       }
     },
     async addHoliday(ctx) {
