@@ -97,6 +97,9 @@
     },
     "lateCount": {
       "type": "integer"
+    },
+    "netSalary": {
+      "type": "biginteger"
     }
   }
 }

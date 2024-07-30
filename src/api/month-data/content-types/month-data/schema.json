@@ -55,7 +55,8 @@
       "mappedBy": "month_data"
     },
     "holidayCount": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     }
   }
 }
