@@ -117,7 +117,10 @@ module.exports = createCoreController(
         );
         console.log("updatedMonthlySalary", updatedMonthlySalary);
 
-        //calculate withholding tax
+        //calculate withholding tax if it is not already calculated
+        if (monthlySalaries[i].WTH > 0) {
+          continue;
+        }
         //find all the salary records of the employee for the year
         const allSalariesForEmployee = await strapi.entityService.findMany(
           "api::monthly-salary.monthly-salary",
