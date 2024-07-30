@@ -168,6 +168,7 @@ module.exports = createCoreController(
             },
           }
         );
+
         console.log("total tax paid", totalTaxPaid);
       }
 
