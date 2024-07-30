@@ -67,6 +67,24 @@ module.exports = createCoreController(
           totalHours +=
             monthlySalaries[i].dailyWorks[j].hubstaffHours +
             monthlySalaries[i].dailyWorks[j].manualHours;
+          if (monthlySalaries[i].dailyWorks[j].isLeave) {
+            if (monthlySalaries[i].employee.leavesRemaining > 0) {
+              totalHours += 8;
+              await strapi.entityService.update(
+                "api::employee.employee",
+                monthlySalaries[i].employee.id,
+                {
+                  data: {
+                    leavesRemaining:
+                      monthlySalaries[i].employee.leavesRemaining - 1,
+                  },
+                }
+              );
+            }
+          }
+          if (monthlySalaries[i].dailyWorks[j].isHoliday) {
+            totalHours += 8;
+          }
         }
         console.log("totalHours", totalHours);
         //calculate total salary and separate it from medical allowance

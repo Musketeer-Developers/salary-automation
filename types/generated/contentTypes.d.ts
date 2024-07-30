@@ -1078,7 +1078,7 @@ export interface ApiMonthDataMonthData extends Schema.CollectionType {
       'oneToMany',
       'api::monthly-salary.monthly-salary'
     >;
-    holidayCount: Attribute.Integer;
+    holidayCount: Attribute.Integer & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1152,6 +1152,7 @@ export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
     >;
     absentCount: Attribute.Integer;
     lateCount: Attribute.Integer;
+    netSalary: Attribute.BigInteger;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1222,15 +1223,16 @@ export interface ApiWithHoldingTaxWithHoldingTax extends Schema.CollectionType {
       'oneToOne',
       'api::employee.employee'
     >;
-    yearlySalary: Attribute.BigInteger & Attribute.Required;
-    totalTaxToBePaid: Attribute.BigInteger & Attribute.Required;
-    monthlyAmountToBePaid: Attribute.BigInteger & Attribute.Required;
+    projectedYearlySalary: Attribute.BigInteger & Attribute.Required;
+    totalTaxToBePaid: Attribute.BigInteger;
+    monthlyAmountToBePaid: Attribute.BigInteger;
     totalPaid: Attribute.BigInteger;
     tax_slab: Attribute.Relation<
       'api::with-holding-tax.with-holding-tax',
       'oneToOne',
       'api::tax-slab.tax-slab'
     >;
+    healthAllowance: Attribute.BigInteger;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
