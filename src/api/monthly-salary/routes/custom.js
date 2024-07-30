@@ -6,6 +6,7 @@ module.exports = {
       handler: "monthly-salary.calculateSalary",
       config: {
         policies: [],
+        auth: false,
       },
     },
   ],

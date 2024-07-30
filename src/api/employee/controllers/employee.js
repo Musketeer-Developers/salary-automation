@@ -86,11 +86,12 @@ module.exports = createCoreController(
             healthAllowance: monthlyHealthAllowance,
             projectedYearlySalary: projectedAnnualSalary,
             totalPaid: 0,
+            publishedAt: Date.now(),
           },
         }
       );
 
-      ctx.body = { result, wht: whtData };
+      ctx.body = { data: result.data, wht: whtData };
     },
   })
 );

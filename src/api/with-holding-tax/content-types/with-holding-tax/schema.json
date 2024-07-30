@@ -18,17 +18,17 @@
       "target": "api::employee.employee",
       "mappedBy": "wht"
     },
-    "yearlySalary": {
+    "projectedYearlySalary": {
       "type": "biginteger",
       "required": true
     },
     "totalTaxToBePaid": {
       "type": "biginteger",
-      "required": true
+      "required": false
     },
     "monthlyAmountToBePaid": {
       "type": "biginteger",
-      "required": true
+      "required": false
     },
     "totalPaid": {
       "type": "biginteger"
@@ -37,6 +37,9 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::tax-slab.tax-slab"
+    },
+    "healthAllowance": {
+      "type": "biginteger"
     }
   }
 }
