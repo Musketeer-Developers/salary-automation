@@ -124,6 +124,8 @@ module.exports = createCoreController(
 
           ctx.body = employeeIDs;
         }
+          ctx.body = employeeIDs;
+        }
       } catch (error) {
         console.log("error", error);
         ctx.body = "Error222";

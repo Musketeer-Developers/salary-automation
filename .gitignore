@@ -113,9 +113,4 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
-src/api/bank-detail/documentation/1.0.0/bank-detail.json
-src/api/daily-work/documentation/1.0.0/daily-work.json
-src/api/employee/documentation/1.0.0/employee.json
-src/api/misc-adjustment/documentation/1.0.0/misc-adjustment.json
-src/api/misc-adjustment/documentation/1.0.0/misc-adjustment.json
-src/api/month-data/content-types/month-data/schema.json
+
