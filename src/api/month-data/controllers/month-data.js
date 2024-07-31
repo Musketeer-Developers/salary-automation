@@ -96,6 +96,9 @@ module.exports = createCoreController(
           );
 
           if (existingMonthlySalary.length === 0) {
+            // Get healthAllowance from with-holding-tax relation
+            const healthAllowance = employee.wht ? employee.wht.healthAllowance : 0;
+
             // Create monthly salary for employee if it doesn't exist
             const employeeSalaryEntity = await strapi.entityService.create(
               "api::monthly-salary.monthly-salary",
@@ -104,7 +107,7 @@ module.exports = createCoreController(
                   employee: employee.id,
                   basicSalary: employee.grossSalary,
                   grossSalaryEarned: 0,
-                  medicalAllowance: 0,
+                  medicalAllowance: healthAllowance, // Set medicalAllowance to healthAllowance
                   paidSalary: 0,
                   monthlyRate: employee.grossSalary / (workingDates.count * 8),
                   TotalHoursMonth: workingDates.count * 8,
