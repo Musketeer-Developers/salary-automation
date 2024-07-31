@@ -73,7 +73,12 @@ module.exports = createCoreController(
         const employees = await strapi.entityService.findMany(
           "api::employee.employee",
           {
-            fields: ["id", "grossSalary", "leavesRemaining"],
+            fields: [
+              "id",
+              "grossSalary",
+              "leavesRemaining",
+              "employementStatus",
+            ],
             populate: ["wht"],
           }
         );
@@ -115,34 +120,33 @@ module.exports = createCoreController(
 
             // Create daily work entries for the employee
             for (let j = 1; j <= totalDaysInMonth; j++) {
-              await strapi.entityService.create(
-                "api::daily-work.daily-work",
+              await strapi.entityService.create("api::daily-work.daily-work", {
+                data: {
+                  empNo: employee.id,
+                  workDate: new Date(req.year, monthEnum[req.month] - 1, j),
+                  hubstaffHours: 0,
+                  manualHours: 0,
+                  isHoliday: false,
+                  isLate: false,
+                  isLeave: false,
+                  salaryMonth: employeeSalaryEntity.id,
+                  publishedAt: Date.now(),
+                },
+              });
+            }
+
+            // Add 2 leaves for each employee
+            if (employee.employementStatus === "Permanent") {
+              await strapi.entityService.update(
+                "api::employee.employee",
+                employee.id,
                 {
                   data: {
-                    empNo: employee.id,
-                    workDate: new Date(req.year, monthEnum[req.month] - 1, j),
-                    hubstaffHours: 0,
-                    manualHours: 0,
-                    isHoliday: false,
-                    isLate: false,
-                    isLeave: false,
-                    salaryMonth: employeeSalaryEntity.id,
-                    publishedAt: Date.now(),
+                    leavesRemaining: employee.leavesRemaining + 2,
                   },
                 }
               );
             }
-
-            // Add 2 leaves for each employee
-            await strapi.entityService.update(
-              "api::employee.employee",
-              employee.id,
-              {
-                data: {
-                  leavesRemaining: employee.leavesRemaining + 2,
-                },
-              }
-            );
           }
         }
         ctx.body = { message: "Month data initialized" };
@@ -151,7 +155,7 @@ module.exports = createCoreController(
         ctx.body = { message: "Error in making new month data" };
       }
     },
-    
+
     async addHoliday(ctx) {
       const req = ctx.request.body;
       //separate 2010-08-05
