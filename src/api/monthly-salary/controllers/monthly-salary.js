@@ -90,9 +90,9 @@ module.exports = createCoreController(
         //calculate total salary and separate it from medical allowance
         let totalEarnedSalary = totalHours * monthlySalaries[i].monthlyRate;
         let NetSalary = totalEarnedSalary;
-        console.log("totalEarnedSalary", totalEarnedSalary);
+
         let medicalAllowance = parseInt(monthlySalaries[i].medicalAllowance);
-        console.log("medicalAllowance", medicalAllowance);
+
         if (
           totalEarnedSalary >
           3 * parseInt(monthlySalaries[i].medicalAllowance)
@@ -115,12 +115,11 @@ module.exports = createCoreController(
             },
           }
         );
-        console.log("updatedMonthlySalary", updatedMonthlySalary);
 
         //calculate withholding tax if it is not already calculated
-        if (monthlySalaries[i].WTH > 0) {
-          continue;
-        }
+        // if (monthlySalaries[i].WTH > 0) {
+        //   continue;
+        // }
         //find all the salary records of the employee for the year
         const allSalariesForEmployee = await strapi.entityService.findMany(
           "api::monthly-salary.monthly-salary",
@@ -185,11 +184,10 @@ module.exports = createCoreController(
           {
             data: {
               WTH: parseInt(monthlyTax),
+              netSalary: parseInt(NetSalary - monthlyTax),
             },
           }
         );
-
-        console.log("total tax paid", totalTaxPaid);
       }
 
       ctx.body = { message: "Salary Calculated" };
