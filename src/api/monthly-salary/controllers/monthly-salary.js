@@ -33,6 +33,20 @@ module.exports = createCoreController(
         11: "november",
         12: "december",
       };
+      const fiscalYearEnum = {
+        july: 0,
+        august: 1,
+        september: 2,
+        october: 3,
+        november: 4,
+        december: 5,
+        january: 6,
+        february: 7,
+        march: 8,
+        april: 9,
+        may: 10,
+        june: 11,
+      };
       if (req.month < 7) {
         var fiscalYearCalculator = req.year - 1;
       } else {
@@ -113,77 +127,111 @@ module.exports = createCoreController(
           }
         );
         //calculate withholding tax if it is not already calculated
-        if (monthlySalaries[i].WTH === 0) {
-          //find all the salary records of the employee for the year
-          const allSalariesForEmployee = await strapi.entityService.findMany(
-            "api::monthly-salary.monthly-salary",
-            {
-              filters: {
-                employee: {
-                  id: monthlySalaries[i].employee.id,
-                },
-                month_data: {
-                  monthIdentifier: {
-                    $in: [
-                      fiscalYear[0],
-                      fiscalYear[1],
-                      fiscalYear[2],
-                      fiscalYear[3],
-                      fiscalYear[4],
-                      fiscalYear[5],
-                      fiscalYear[6],
-                      fiscalYear[7],
-                      fiscalYear[8],
-                      fiscalYear[9],
-                      fiscalYear[10],
-                      fiscalYear[11],
-                    ],
-                  },
+
+        const allSalariesForEmployee = await strapi.entityService.findMany(
+          "api::monthly-salary.monthly-salary",
+          {
+            filters: {
+              employee: {
+                id: monthlySalaries[i].employee.id,
+              },
+              month_data: {
+                monthIdentifier: {
+                  $in: [
+                    fiscalYear[0],
+                    fiscalYear[1],
+                    fiscalYear[2],
+                    fiscalYear[3],
+                    fiscalYear[4],
+                    fiscalYear[5],
+                    fiscalYear[6],
+                    fiscalYear[7],
+                    fiscalYear[8],
+                    fiscalYear[9],
+                    fiscalYear[10],
+                    fiscalYear[11],
+                  ],
                 },
               },
-            }
-          );
-
-          let totalTaxPaid = 0;
-          //take average of all the salaries of the employee
-          let totalEarnedSalaryForEmployee = 0;
-          for (let k = 0; k < allSalariesForEmployee.length; k++) {
-            totalEarnedSalaryForEmployee += parseInt(
-              allSalariesForEmployee[k].grossSalaryEarned
-            );
-            totalTaxPaid += parseInt(allSalariesForEmployee[k].WTH);
+            },
+            populate: "*",
           }
-          let averageSalary =
-            totalEarnedSalaryForEmployee / allSalariesForEmployee.length;
-
-          let withholdingTax = 0;
-          let annualSalary = averageSalary * 12;
-          //GET TAX SLAB
-          const taxSlab = await strapi.entityService.findMany(
-            "api::tax-slab.tax-slab",
-            {
-              filters: {
-                lowerCap: { $lte: annualSalary },
-                upperCap: { $gte: annualSalary },
-              },
-            }
+        );
+        //sort them by month_data.month from july to june
+        allSalariesForEmployee.sort((a, b) => {
+          return (
+            fiscalYearEnum[a.month_data.month] -
+            fiscalYearEnum[b.month_data.month]
           );
-          const totalTaxToBePaid =
-            (annualSalary - taxSlab[0].lowerCap) * (taxSlab[0].rate / 100) +
-            parseInt(taxSlab[0].fixedAmount);
+        });
+        let totalTaxPaid = 0;
 
-          const monthlyTax = totalTaxToBePaid / 12;
-          const updatedMonthlySalaryWithTax = await strapi.entityService.update(
-            "api::monthly-salary.monthly-salary",
-            monthlySalaries[i].id,
-            {
-              data: {
-                WTH: parseInt(monthlyTax),
-                netSalary: parseInt(NetSalary - monthlyTax),
-              },
-            }
+        //select salaries until the current month
+
+        let totalEarnedSalaryForEmployeeUntilCurrentMonth = [];
+        for (let k = 0; k < allSalariesForEmployee.length; k++) {
+          totalEarnedSalaryForEmployeeUntilCurrentMonth.push(
+            allSalariesForEmployee[k]
+          );
+          if (
+            allSalariesForEmployee[k].month_data.month === monthEnum[req.month]
+          ) {
+            break;
+          }
+        }
+        console.log(
+          "totalEarnedSalaryForEmployeeUntilCurrentMonth",
+          totalEarnedSalaryForEmployeeUntilCurrentMonth.length
+        );
+        //take average of all the salaries of the employee
+        let totalEarnedSalaryForEmployee = 0;
+        for (
+          let k = 0;
+          k < totalEarnedSalaryForEmployeeUntilCurrentMonth.length;
+          k++
+        ) {
+          totalEarnedSalaryForEmployee += parseInt(
+            totalEarnedSalaryForEmployeeUntilCurrentMonth[k].grossSalaryEarned
+          );
+          totalTaxPaid += parseInt(
+            totalEarnedSalaryForEmployeeUntilCurrentMonth[k].WTH
           );
         }
+        console.log(
+          "totalEarnedSalaryForEmployee",
+          totalEarnedSalaryForEmployee
+        );
+        let averageSalary =
+          totalEarnedSalaryForEmployee / allSalariesForEmployee.length;
+
+        let withholdingTax = 0;
+        let annualSalary = averageSalary * 12;
+        //GET TAX SLAB
+        const taxSlab = await strapi.entityService.findMany(
+          "api::tax-slab.tax-slab",
+          {
+            filters: {
+              lowerCap: { $lte: annualSalary },
+              upperCap: { $gte: annualSalary },
+            },
+          }
+        );
+
+        const totalTaxToBePaid =
+          (annualSalary - taxSlab[0].lowerCap) * (taxSlab[0].rate / 100) +
+          parseInt(taxSlab[0].fixedAmount);
+
+        const monthlyTax = totalTaxToBePaid / 12;
+        const updatedMonthlySalaryWithTax = await strapi.entityService.update(
+          "api::monthly-salary.monthly-salary",
+          monthlySalaries[i].id,
+          {
+            data: {
+              WTH: parseInt(monthlyTax),
+              netSalary: parseInt(NetSalary - monthlyTax),
+            },
+          }
+        );
       }
 
       ctx.body = { message: "Salary Calculated" };
