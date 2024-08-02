@@ -33,8 +33,10 @@ module.exports = createCoreController(
         11: "november",
         12: "december",
       };
-      if (req.month < 6) {
+      if (req.month < 7) {
         var fiscalYearCalculator = req.year - 1;
+      } else {
+        var fiscalYearCalculator = req.year;
       }
       const fiscalYear = [
         monthEnum[1] + (fiscalYearCalculator + 1),
@@ -95,9 +97,7 @@ module.exports = createCoreController(
         let NetSalary = totalEarnedSalary;
 
         //calculate medical allowance
-        let medicalAllowance = parseInt(
-          (monthlySalaries[i].grossSalaryEarned / 1.1) * 0.1
-        );
+        let medicalAllowance = parseInt((totalEarnedSalary / 1.1) * 0.1);
 
         //update it in the database
         const updatedMonthlySalary = await strapi.entityService.update(
@@ -107,7 +107,7 @@ module.exports = createCoreController(
             data: {
               grossSalaryEarned: parseInt(totalEarnedSalary),
               medicalAllowance: medicalAllowance,
-              netSalary: parseInt(NetSalary),
+              netSalary: parseInt(NetSalary - medicalAllowance),
               hoursLogged: totalHours,
             },
           }
