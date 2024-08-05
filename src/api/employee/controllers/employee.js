@@ -93,6 +93,25 @@ module.exports = createCoreController(
 
       ctx.body = { data: result.data, wht: whtData };
     },
+    
+    async unpublishEmployee(ctx) {
+      const { id } = ctx.params;
+      try {
+        // Unpublish the employee by setting publishedAt to null
+        const result = await strapi.entityService.update(
+          "api::employee.employee",
+          id,
+          {
+            data: {
+              publishedAt: null,
+            },
+          }
+        );
+        ctx.body = result;
+      } catch (error) {
+        ctx.throw(500, `Failed to unpublish employee with id ${id}`);
+      }
+    },
   })
 );
 

@@ -9,5 +9,14 @@ module.exports = {
         auth: false,
       },
     },
+    {
+      method: 'PUT',
+      path: '/employees/:id/unpublish',
+      handler: 'employee.unpublishEmployee',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
