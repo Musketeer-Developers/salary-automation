@@ -18,7 +18,7 @@ module.exports = createCoreController(
       //     month:8,
       //   year: 2024,
       // }
-      console.log("req", req);
+
       const monthEnum = {
         1: "january",
         2: "february",
@@ -109,19 +109,18 @@ module.exports = createCoreController(
         //calculate total salary and separate it from medical allowance
         let totalEarnedSalary = totalHours * monthlySalaries[i].monthlyRate;
         let NetSalary = totalEarnedSalary;
-
         //calculate medical allowance
         let medicalAllowance = parseInt((totalEarnedSalary / 1.1) * 0.1);
-
+        NetSalary = NetSalary - medicalAllowance;
         //update it in the database
         const updatedMonthlySalary = await strapi.entityService.update(
           "api::monthly-salary.monthly-salary",
           monthlySalaries[i].id,
           {
             data: {
-              grossSalaryEarned: parseInt(totalEarnedSalary),
+              grossSalaryEarned: parseInt(totalEarnedSalary - medicalAllowance),
               medicalAllowance: medicalAllowance,
-              netSalary: parseInt(NetSalary - medicalAllowance),
+              netSalary: parseInt(NetSalary),
               hoursLogged: totalHours,
             },
           }
@@ -179,10 +178,7 @@ module.exports = createCoreController(
             break;
           }
         }
-        console.log(
-          "totalEarnedSalaryForEmployeeUntilCurrentMonth",
-          totalEarnedSalaryForEmployeeUntilCurrentMonth.length
-        );
+
         //take average of all the salaries of the employee
         let totalEarnedSalaryForEmployee = 0;
         for (
@@ -197,12 +193,9 @@ module.exports = createCoreController(
             totalEarnedSalaryForEmployeeUntilCurrentMonth[k].WTH
           );
         }
-        console.log(
-          "totalEarnedSalaryForEmployee",
-          totalEarnedSalaryForEmployee
-        );
         let averageSalary =
-          totalEarnedSalaryForEmployee / allSalariesForEmployee.length;
+          totalEarnedSalaryForEmployee /
+          totalEarnedSalaryForEmployeeUntilCurrentMonth.length;
 
         let withholdingTax = 0;
         let annualSalary = averageSalary * 12;
