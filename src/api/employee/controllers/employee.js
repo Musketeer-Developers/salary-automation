@@ -11,42 +11,28 @@ module.exports = createCoreController(
 
   ({ strapi }) => ({
     async calculateTax(ctx) {
-      // data format will be
-      // {
-      //     id: 1,
-      //     monthRemaining: 6,
-      //     startyear: 2021,
-      //     startmonth: 1,
-      //     startday: 1,
-      // }
       const data = ctx.request.body.data;
       console.log("data", data);
       const employee = await strapi.entityService.findOne(
         "api::employee.employee",
         data.id
       );
-      //get total working days in the month
       const workingDays = getWorkingDaysFromDate(
         data.startyear,
         data.startmonth
       );
-      //calculate monthly rate
       const monthlyRate = employee.grossSalary / workingDays;
-      //calculate working days they are supposed to work
       const workingDaysInMonth = getWorkingDaysFromDate(
         data.startyear,
         data.startmonth,
         data.startday
       );
-      //calculate salary for the month
       const salaryForTheMonth = monthlyRate * workingDaysInMonth;
 
-      //ANNUAL SALARY WILL BE
       const annualSalary = Math.round(
         employee.grossSalary * data.monthRemaining + salaryForTheMonth
       );
 
-      //GET TAX SLAB
       const taxSlab = await strapi.entityService.findMany(
         "api::tax-slab.tax-slab",
         {
@@ -97,7 +83,33 @@ module.exports = createCoreController(
     async unpublishEmployee(ctx) {
       const { id } = ctx.params;
       try {
-        // Unpublish the employee by setting publishedAt to null
+        // Find all monthly salaries for the employee
+        const monthlySalaries = await strapi.entityService.findMany(
+          "api::monthly-salary.monthly-salary",
+          {
+            filters: { employee: id },
+          }
+        );
+
+        // Unpublish all daily works associated with each monthly salary
+        for (const salary of monthlySalaries) {
+          await strapi.entityService.updateMany(
+            "api::daily-work.daily-work",
+            {
+              data: { publishedAt: null },
+              filters: { salaryMonth: salary.id },
+            }
+          );
+
+          // Unpublish the monthly salary
+          await strapi.entityService.update(
+            "api::monthly-salary.monthly-salary",
+            salary.id,
+            { data: { publishedAt: null } }
+          );
+        }
+
+        // Unpublish the employee
         const result = await strapi.entityService.update(
           "api::employee.employee",
           id,
@@ -107,6 +119,7 @@ module.exports = createCoreController(
             },
           }
         );
+
         ctx.body = result;
       } catch (error) {
         ctx.throw(500, `Failed to unpublish employee with id ${id}`);
