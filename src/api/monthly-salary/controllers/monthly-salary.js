@@ -11,6 +11,7 @@ module.exports = createCoreController(
   ({ strapi }) => ({
     async calculateSalary(ctx) {
       try {
+        // @ts-ignore
         const req = ctx.request.body;
         console.log("Request received:", req);
 
@@ -76,6 +77,28 @@ module.exports = createCoreController(
 
         for (let i = 0; i < monthlySalaries.length; i++) {
           console.log("Processing salary for employee:", monthlySalaries[i].employee.id);
+
+          // Fetch employee details including joining date
+          const employee = await strapi.entityService.findOne(
+            "api::employee.employee",
+            monthlySalaries[i].employee.id,
+            {
+              fields: ["joinDate"],
+            }
+          );
+          console.log("Employee details:", employee);
+
+          function getMonthName(monthNumber) {
+            const date = new Date();
+            date.setMonth(monthNumber); // JavaScript months are 0-11, so we subtract 1
+            return date.toLocaleString('default', { month: 'long' });
+          }
+ 
+          let joiningDate = new Date(employee.joinDate);
+          let joiningMonth = joiningDate.getMonth(); // JavaScript months are zero-based
+          let joiningMonthName = getMonthName(joiningMonth)
+          joiningMonthName = joiningMonthName.toLowerCase(); 
+          let joiningYear = joiningDate.getFullYear();
           
           let totalHours = 0;
           for (let j = 0; j < monthlySalaries[i].dailyWorks.length; j++) {
@@ -177,9 +200,19 @@ module.exports = createCoreController(
           }
           console.log("Total earned salary for employee before this month:", totalEarnedSalaryForEmployee);
           console.log("Total Tax paid before this month: ", totalTaxPaid);
+          console.log("Joining Month in fiscal year: ", fiscalYearEnum[joiningMonthName]);
+          console.log("req.year, joiningYear", req.year, ", ",joiningYear)
+          let monthsWorkedInThisYear = 12;
+          if (joiningYear === req.year) {
+            monthsWorkedInThisYear = 12 - fiscalYearEnum[joiningMonthName];
+          }
 
+
+          console.log("Expected months worked this year: ", monthsWorkedInThisYear);
+
+                                        // Previous months              // Current month                          // Number of months including this one
           let averageSalary = parseInt((totalEarnedSalaryForEmployee + (totalEarnedSalary - medicalAllowance)) / (totalEarnedSalaryForEmployeeUntilCurrentMonth.length + 1));
-          let annualSalary = averageSalary * 12;
+          let annualSalary = averageSalary * monthsWorkedInThisYear;
 
           console.log("averageSalary: ", averageSalary);
 
@@ -195,7 +228,7 @@ module.exports = createCoreController(
           console.log("Tax slab found:", taxSlab);
 
           const totalTaxToBePaid = (annualSalary - taxSlab[0].lowerCap) * (taxSlab[0].rate / 100) + parseInt(taxSlab[0].fixedAmount);
-          const monthlyTax = totalTaxToBePaid / 12;
+          const monthlyTax = totalTaxToBePaid / monthsWorkedInThisYear;
 
           const updatedMonthlySalaryWithTax = await strapi.entityService.update(
             "api::monthly-salary.monthly-salary",
