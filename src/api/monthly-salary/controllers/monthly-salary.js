@@ -153,14 +153,16 @@ module.exports = createCoreController(
           let totalTaxPaid = 0;
           let totalEarnedSalaryForEmployeeUntilCurrentMonth = [];
           for (let k = 0; k < allSalariesForEmployee.length; k++) {
-            totalEarnedSalaryForEmployeeUntilCurrentMonth.push(
-              allSalariesForEmployee[k]
-            );
+            console.log("Previous month: ", allSalariesForEmployee[k].month_data.month)
+
             if (
               allSalariesForEmployee[k].month_data.month === req.month
             ) {
               break;
             }
+            totalEarnedSalaryForEmployeeUntilCurrentMonth.push(
+              allSalariesForEmployee[k]
+            );
           }
           console.log("Salaries until current month:", totalEarnedSalaryForEmployeeUntilCurrentMonth.length);
 
@@ -173,10 +175,13 @@ module.exports = createCoreController(
               totalEarnedSalaryForEmployeeUntilCurrentMonth[k].WTH
             );
           }
-          console.log("Total earned salary for employee:", totalEarnedSalaryForEmployee);
+          console.log("Total earned salary for employee before this month:", totalEarnedSalaryForEmployee);
+          console.log("Total Tax paid before this month: ", totalTaxPaid);
 
-          let averageSalary = totalEarnedSalaryForEmployee / totalEarnedSalaryForEmployeeUntilCurrentMonth.length;
+          let averageSalary = parseInt((totalEarnedSalaryForEmployee + (totalEarnedSalary - medicalAllowance)) / (totalEarnedSalaryForEmployeeUntilCurrentMonth.length + 1));
           let annualSalary = averageSalary * 12;
+
+          console.log("averageSalary: ", averageSalary);
 
           const taxSlab = await strapi.entityService.findMany(
             "api::tax-slab.tax-slab",
@@ -203,6 +208,17 @@ module.exports = createCoreController(
             }
           );
           console.log("Updated monthly salary with tax:", updatedMonthlySalaryWithTax);
+
+          // Update Withholding Tax Collection
+          await updateWithHoldingTax(
+            strapi,
+            monthlySalaries[i].employee.id,
+            annualSalary,
+            totalTaxToBePaid,
+            monthlyTax,
+            totalTaxPaid,
+            taxSlab[0].id
+          );
         }
 
         ctx.body = { message: "Salary Calculated" };
@@ -214,3 +230,46 @@ module.exports = createCoreController(
     },
   })
 );
+
+async function updateWithHoldingTax(
+  strapi,
+  employeeId,
+  annualSalary,
+  totalTaxToBePaid,
+  monthlyTax,
+  totalTaxPaid,
+  taxSlabId
+) {
+  const withHoldingTax = await strapi.entityService.findMany(
+    "api::with-holding-tax.with-holding-tax",
+    {
+      filters: {
+        emp_no: {
+          id: employeeId,
+        },
+      },
+    }
+  );
+
+  if (withHoldingTax.length > 0) {
+    const totalPaidBeforeCurrentMonth = totalTaxPaid;
+    const newTotalPaid = totalPaidBeforeCurrentMonth + monthlyTax;
+
+    const updatedWithHoldingTax = await strapi.entityService.update(
+      "api::with-holding-tax.with-holding-tax",
+      withHoldingTax[0].id,
+      {
+        data: {
+          projectedYearlySalary: parseInt(annualSalary),
+          totalTaxToBePaid: parseInt(totalTaxToBePaid),
+          monthlyAmountToBePaid: parseInt(monthlyTax),
+          totalPaid: parseInt(newTotalPaid),
+          tax_slab: taxSlabId,
+        },
+      }
+    );
+    console.log("Updated withholding tax:", updatedWithHoldingTax);
+  } else {
+    console.log(`Withholding tax record not found for employee ${employeeId}`);
+  }
+}
