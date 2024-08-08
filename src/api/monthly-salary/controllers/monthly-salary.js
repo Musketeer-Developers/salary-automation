@@ -120,6 +120,8 @@ module.exports = createCoreController(
           let joiningYear = joiningDate.getFullYear();
           
           let totalHours = 0;
+          let paidLeavesUsed = 0; // Initialize counter for paid leaves used
+
           for (let j = 0; j < monthlySalaries[i].dailyWorks.length; j++) {
             totalHours +=
               monthlySalaries[i].dailyWorks[j].hubstaffHours +
@@ -128,6 +130,8 @@ module.exports = createCoreController(
             if (monthlySalaries[i].dailyWorks[j].isLeave) {
               if (monthlySalaries[i].employee.leavesRemaining > 0) {
                 totalHours += 8;
+                paidLeavesUsed += 1; // Increment the counter for each paid leave used
+
                 await strapi.entityService.update(
                   "api::employee.employee",
                   monthlySalaries[i].employee.id,
@@ -158,6 +162,7 @@ module.exports = createCoreController(
             monthlySalaries[i].id,
             {
               data: {
+                paidLeavesUsed: paidLeavesUsed,
                 grossSalaryEarned: parseInt(totalEarnedSalary - medicalAllowance),
                 medicalAllowance: medicalAllowance,
                 netSalary: parseInt(NetSalary),
