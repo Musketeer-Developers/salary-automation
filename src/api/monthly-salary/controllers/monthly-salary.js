@@ -280,7 +280,8 @@ module.exports = createCoreController(
             fiscalYearString,
             totalTaxPaid,
             taxSlab[0].id,
-            monthlyTax
+            monthlyTax,
+            monthsWorkedInThisYear
           );
         }
 
@@ -302,7 +303,8 @@ async function updateWithHoldingTax(
   year,
   totalTaxPaid,
   taxSlabId,
-  monthlyTax
+  monthlyTax,
+  monthsWorkedInThisYear
 ) {
   const withHoldingTax = await strapi.entityService.findMany(
     "api::with-holding-tax.with-holding-tax",
@@ -316,7 +318,7 @@ async function updateWithHoldingTax(
   );
 
   let existingRecord = withHoldingTax.find(
-    (record) => record.monthlyAmountToBePaid === String(year)
+    (record) => record.fiscalYear === String(year)
   );
 
   if (existingRecord) {
@@ -346,7 +348,7 @@ async function updateWithHoldingTax(
           projectedYearlySalary: parseInt(annualSalary),
           totalTaxToBePaid: parseInt(totalTaxToBePaid),
           fiscalYear: String(year), // Storing the year
-          totalPaid: parseInt(totalTaxToBePaid / 12), // Initial tax for the first month
+          totalPaid: parseInt(totalTaxToBePaid / monthsWorkedInThisYear), // Initial tax for the first month
           tax_slab: taxSlabId,
           publishedAt: new Date(), // Setting the publishedAt field to the current date
         },

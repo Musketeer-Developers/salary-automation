@@ -160,88 +160,115 @@ module.exports = createCoreController(
     },
 
     async addHoliday(ctx) {
-      const req = ctx.request.body;
-      console.log(req);
-      const dateArray = req.date.split("-");
-      const day = parseInt(dateArray[0]);
-      const month = parseInt(dateArray[1]);
-      const year = parseInt(dateArray[2]);
-      const dateObj = new Date(year, month - 1, day);
+      try {
+        const req = ctx.request.body;
+        const dateArray = req.date.split("-");
+        const day = parseInt(dateArray[0]);
+        const month = parseInt(dateArray[1]);
+        const year = parseInt(dateArray[2]);
+        const dateObj = new Date(year, month - 1, day);
     
-      const monthEnum = {
-        1: "january",
-        2: "february",
-        3: "march",
-        4: "april",
-        5: "may",
-        6: "june",
-        7: "july",
-        8: "august",
-        9: "september",
-        10: "october",
-        11: "november",
-        12: "december",
-      };
-      const monthName = monthEnum[month];
+        const monthEnum = {
+          1: "january",
+          2: "february",
+          3: "march",
+          4: "april",
+          5: "may",
+          6: "june",
+          7: "july",
+          8: "august",
+          9: "september",
+          10: "october",
+          11: "november",
+          12: "december",
+        };
+        const monthName = monthEnum[month];
     
-      const monthData = await strapi.entityService.findMany(
-        "api::month-data.month-data",
-        {
-          filters: {
-            monthIdentifier: monthName + year,
-          },
-        }
-      );
-    
-      if (!monthData || monthData.length === 0) {
-        ctx.body = { message: "Month data not found" };
-        return;
-      }
-    
-      // Loop through each employee entry in the request
-      for (const employee of req.employees) {
-        // Find the monthly salary entry for the employee in the given month
-        const monthlySalary = await strapi.entityService.findMany(
-          "api::monthly-salary.monthly-salary",
+        const monthData = await strapi.entityService.findMany(
+          "api::month-data.month-data",
           {
             filters: {
-              employee: employee.empID,
-              month_data: monthData[0].id,
+              monthIdentifier: monthName + year,
+            },
+            populate: {
+              monthly_salaries: true,  // This is to ensure we can count holiday updates later
             },
           }
         );
     
-        if (!monthlySalary || monthlySalary.length === 0) {
-          continue; // Skip if no monthly salary found
+        if (!monthData || monthData.length === 0) {
+          ctx.body = { message: "Month data not found" };
+          return;
         }
     
-        // Find the daily work entry for the specific date
-        const dailyWork = await strapi.entityService.findMany(
-          "api::daily-work.daily-work",
-          {
-            filters: {
-              salaryMonth: monthlySalary[0].id,
-              workDate: dateObj,
-            },
-          }
-        );
+        let holidayAdded = false;
     
-        if (dailyWork.length > 0) {
-          // Update the isHoliday and holidayName fields
-          await strapi.entityService.update(
+        // Loop through each employee entry in the request
+        for (const employee of req.employees) {
+          // Find the monthly salary entry for the employee in the given month
+          const monthlySalary = await strapi.entityService.findMany(
+            "api::monthly-salary.monthly-salary",
+            {
+              filters: {
+                employee: employee.empID,
+                month_data: monthData[0].id,
+              },
+            }
+          );
+    
+          if (!monthlySalary || monthlySalary.length === 0) {
+            continue; // Skip if no monthly salary found
+          }
+    
+          // Find the daily work entry for the specific date
+          const dailyWork = await strapi.entityService.findMany(
             "api::daily-work.daily-work",
-            dailyWork[0].id,
+            {
+              filters: {
+                salaryMonth: monthlySalary[0].id,
+                workDate: dateObj,
+              },
+            }
+          );
+    
+          if (dailyWork.length > 0) {
+            // Update the isHoliday and holidayName fields
+            await strapi.entityService.update(
+              "api::daily-work.daily-work",
+              dailyWork[0].id,
+              {
+                data: {
+                  isHoliday: employee.isHoliday,
+                  holidayName: req.holidayName,
+                },
+              }
+            );
+    
+            // Check if holiday is added for this date
+            if (employee.isHoliday && !holidayAdded) {
+              holidayAdded = true;
+            }
+          }
+        }
+    
+        // Increment holidayCount if a holiday was added
+        if (holidayAdded) {
+          await strapi.entityService.update(
+            "api::month-data.month-data",
+            monthData[0].id,
             {
               data: {
-                isHoliday: employee.isHoliday,
-                holidayName: req.holidayName,
+                holidayCount: monthData[0].holidayCount + 1,
               },
             }
           );
         }
-      }
     
-      ctx.body = { message: "Holiday information updated" };
+        ctx.body = { message: "Holiday information updated" };
+      } catch (error) {
+        console.log("error", error);
+        ctx.body = { message: "Error updating holiday information" };
+      }
     },
 
     async getHolidayInfo(ctx) {

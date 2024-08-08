@@ -1154,6 +1154,7 @@ export interface ApiMonthlySalaryMonthlySalary extends Schema.CollectionType {
     absentCount: Attribute.Integer & Attribute.DefaultTo<0>;
     lateCount: Attribute.Integer & Attribute.DefaultTo<0>;
     netSalary: Attribute.BigInteger;
+    paidLeavesUsed: Attribute.Integer & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1232,7 +1233,7 @@ export interface ApiWithHoldingTaxWithHoldingTax extends Schema.CollectionType {
       'oneToOne',
       'api::tax-slab.tax-slab'
     >;
-    fiscalYear: Attribute.String & Attribute.Required;
+    fiscalYear: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

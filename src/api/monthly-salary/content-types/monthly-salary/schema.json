@@ -102,6 +102,10 @@
     },
     "netSalary": {
       "type": "biginteger"
+    },
+    "paidLeavesUsed": {
+      "type": "integer",
+      "default": 0
     }
   }
 }

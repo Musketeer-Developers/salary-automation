@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-08-08T13:11:03.559Z"
+    "x-generation-date": "2024-08-08T15:03:05.876Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -1016,6 +1016,9 @@
                                       "type": "string",
                                       "pattern": "^\\d*$",
                                       "example": "123456789"
+                                    },
+                                    "paidLeavesUsed": {
+                                      "type": "integer"
                                     },
                                     "createdAt": {
                                       "type": "string",
@@ -2834,6 +2837,9 @@
                                       "type": "string",
                                       "pattern": "^\\d*$",
                                       "example": "123456789"
+                                    },
+                                    "paidLeavesUsed": {
+                                      "type": "integer"
                                     },
                                     "createdAt": {
                                       "type": "string",
@@ -5546,6 +5552,9 @@
                           "pattern": "^\\d*$",
                           "example": "123456789"
                         },
+                        "paidLeavesUsed": {
+                          "type": "integer"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -6823,6 +6832,9 @@
                                       "type": "string",
                                       "pattern": "^\\d*$",
                                       "example": "123456789"
+                                    },
+                                    "paidLeavesUsed": {
+                                      "type": "integer"
                                     },
                                     "createdAt": {
                                       "type": "string",
@@ -9349,6 +9361,9 @@
                         "pattern": "^\\d*$",
                         "example": "123456789"
                       },
+                      "paidLeavesUsed": {
+                        "type": "integer"
+                      },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -11220,6 +11235,9 @@
                           "pattern": "^\\d*$",
                           "example": "123456789"
                         },
+                        "paidLeavesUsed": {
+                          "type": "integer"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -11483,6 +11501,9 @@
                 "type": "string",
                 "pattern": "^\\d*$",
                 "example": "123456789"
+              },
+              "paidLeavesUsed": {
+                "type": "integer"
               }
             }
           }
@@ -12383,6 +12404,9 @@
                                       "type": "string",
                                       "pattern": "^\\d*$",
                                       "example": "123456789"
+                                    },
+                                    "paidLeavesUsed": {
+                                      "type": "integer"
                                     },
                                     "createdAt": {
                                       "type": "string",
@@ -13302,6 +13326,9 @@
             "pattern": "^\\d*$",
             "example": "123456789"
           },
+          "paidLeavesUsed": {
+            "type": "integer"
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -13822,8 +13849,7 @@
         "properties": {
           "data": {
             "required": [
-              "projectedYearlySalary",
-              "fiscalYear"
+              "projectedYearlySalary"
             ],
             "type": "object",
             "properties": {
@@ -13920,8 +13946,7 @@
       "WithHoldingTax": {
         "type": "object",
         "required": [
-          "projectedYearlySalary",
-          "fiscalYear"
+          "projectedYearlySalary"
         ],
         "properties": {
           "emp_no": {
@@ -14762,6 +14787,9 @@
                                       "type": "string",
                                       "pattern": "^\\d*$",
                                       "example": "123456789"
+                                    },
+                                    "paidLeavesUsed": {
+                                      "type": "integer"
                                     },
                                     "createdAt": {
                                       "type": "string",
