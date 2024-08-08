@@ -856,6 +856,7 @@ export interface ApiDailyWorkDailyWork extends Schema.CollectionType {
       'manyToOne',
       'api::monthly-salary.monthly-salary'
     >;
+    holidayName: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -924,11 +925,6 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
       'oneToMany',
       'api::loan.loan'
     >;
-    wht: Attribute.Relation<
-      'api::employee.employee',
-      'oneToOne',
-      'api::with-holding-tax.with-holding-tax'
-    >;
     lastWorkingDay: Attribute.Date;
     phoneNo: Attribute.String &
       Attribute.Required &
@@ -937,6 +933,11 @@ export interface ApiEmployeeEmployee extends Schema.CollectionType {
       }>;
     email: Attribute.Email & Attribute.Required;
     image: Attribute.Media<'images'>;
+    whts: Attribute.Relation<
+      'api::employee.employee',
+      'oneToMany',
+      'api::with-holding-tax.with-holding-tax'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1220,19 +1221,18 @@ export interface ApiWithHoldingTaxWithHoldingTax extends Schema.CollectionType {
   attributes: {
     emp_no: Attribute.Relation<
       'api::with-holding-tax.with-holding-tax',
-      'oneToOne',
+      'manyToOne',
       'api::employee.employee'
     >;
     projectedYearlySalary: Attribute.BigInteger & Attribute.Required;
     totalTaxToBePaid: Attribute.BigInteger;
-    monthlyAmountToBePaid: Attribute.BigInteger;
     totalPaid: Attribute.BigInteger;
     tax_slab: Attribute.Relation<
       'api::with-holding-tax.with-holding-tax',
       'oneToOne',
       'api::tax-slab.tax-slab'
     >;
-    healthAllowance: Attribute.BigInteger;
+    fiscalYear: Attribute.String & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

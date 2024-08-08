@@ -14,19 +14,15 @@
   "attributes": {
     "emp_no": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "api::employee.employee",
-      "mappedBy": "wht"
+      "inversedBy": "whts"
     },
     "projectedYearlySalary": {
       "type": "biginteger",
       "required": true
     },
     "totalTaxToBePaid": {
-      "type": "biginteger",
-      "required": false
-    },
-    "monthlyAmountToBePaid": {
       "type": "biginteger",
       "required": false
     },
@@ -38,8 +34,9 @@
       "relation": "oneToOne",
       "target": "api::tax-slab.tax-slab"
     },
-    "healthAllowance": {
-      "type": "biginteger"
+    "fiscalYear": {
+      "type": "string",
+      "required": true
     }
   }
 }

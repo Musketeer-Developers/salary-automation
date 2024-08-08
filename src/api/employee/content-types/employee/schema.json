@@ -78,12 +78,6 @@
       "target": "api::loan.loan",
       "mappedBy": "employee"
     },
-    "wht": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::with-holding-tax.with-holding-tax",
-      "inversedBy": "emp_no"
-    },
     "lastWorkingDay": {
       "type": "date"
     },
@@ -102,6 +96,12 @@
       ],
       "type": "media",
       "multiple": false
+    },
+    "whts": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::with-holding-tax.with-holding-tax",
+      "mappedBy": "emp_no"
     }
   }
 }

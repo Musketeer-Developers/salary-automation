@@ -15,6 +15,21 @@ module.exports = createCoreController(
         const req = ctx.request.body;
         console.log("Request received:", req);
 
+        const monthEnum = {
+          january: 1,
+          february: 2,
+          march: 3,
+          april: 4,
+          may: 5,
+          june: 6,
+          july: 7,
+          august: 8,
+          september: 9,
+          october: 10,
+          november: 11,
+          december: 12,
+        };
+
         const fiscalYearEnum = {
           july: 0,
           august: 1,
@@ -31,7 +46,7 @@ module.exports = createCoreController(
         };
 
         let fiscalYearCalculator;
-        if (req.month < 7) {
+        if (monthEnum[req.month] < 7) {
           fiscalYearCalculator = req.year - 1;
         } else {
           fiscalYearCalculator = req.year;
@@ -53,6 +68,10 @@ module.exports = createCoreController(
           `${"june"}${fiscalYearCalculator + 1}`,
         ];
         console.log("Fiscal year:", fiscalYear);
+
+        const fiscalYearString = `${fiscalYearCalculator}-${fiscalYearCalculator + 1}`;
+
+        console.log("Fiscal year string:", fiscalYearString);
 
         const identifier = `${req.month}${req.year}`;
         console.log("Searching for identifier:", identifier);
@@ -213,6 +232,11 @@ module.exports = createCoreController(
                                         // Previous months              // Current month                          // Number of months including this one
           let averageSalary = parseInt((totalEarnedSalaryForEmployee + (totalEarnedSalary - medicalAllowance)) / (totalEarnedSalaryForEmployeeUntilCurrentMonth.length + 1));
           let annualSalary = averageSalary * monthsWorkedInThisYear;
+          if(req.month === "june")
+          {
+            console.log("\nJUNE INVOKED\n");
+            annualSalary = parseInt(totalEarnedSalaryForEmployee + (totalEarnedSalary - medicalAllowance))
+          }
 
           console.log("averageSalary: ", averageSalary);
 
@@ -228,7 +252,12 @@ module.exports = createCoreController(
           console.log("Tax slab found:", taxSlab);
 
           const totalTaxToBePaid = (annualSalary - taxSlab[0].lowerCap) * (taxSlab[0].rate / 100) + parseInt(taxSlab[0].fixedAmount);
-          const monthlyTax = totalTaxToBePaid / monthsWorkedInThisYear;
+          let monthlyTax = totalTaxToBePaid / monthsWorkedInThisYear;
+          if(req.month === "june")
+            {
+              monthlyTax = totalTaxToBePaid - totalTaxPaid;
+
+            }
 
           const updatedMonthlySalaryWithTax = await strapi.entityService.update(
             "api::monthly-salary.monthly-salary",
@@ -248,9 +277,10 @@ module.exports = createCoreController(
             monthlySalaries[i].employee.id,
             annualSalary,
             totalTaxToBePaid,
-            monthlyTax,
+            fiscalYearString,
             totalTaxPaid,
-            taxSlab[0].id
+            taxSlab[0].id,
+            monthlyTax
           );
         }
 
@@ -269,9 +299,10 @@ async function updateWithHoldingTax(
   employeeId,
   annualSalary,
   totalTaxToBePaid,
-  monthlyTax,
+  year,
   totalTaxPaid,
-  taxSlabId
+  taxSlabId,
+  monthlyTax
 ) {
   const withHoldingTax = await strapi.entityService.findMany(
     "api::with-holding-tax.with-holding-tax",
@@ -284,18 +315,22 @@ async function updateWithHoldingTax(
     }
   );
 
-  if (withHoldingTax.length > 0) {
+  let existingRecord = withHoldingTax.find(
+    (record) => record.monthlyAmountToBePaid === String(year)
+  );
+
+  if (existingRecord) {
     const totalPaidBeforeCurrentMonth = totalTaxPaid;
-    const newTotalPaid = totalPaidBeforeCurrentMonth + monthlyTax;
+    const newTotalPaid = totalPaidBeforeCurrentMonth + monthlyTax; // Monthly tax calculated
 
     const updatedWithHoldingTax = await strapi.entityService.update(
       "api::with-holding-tax.with-holding-tax",
-      withHoldingTax[0].id,
+      existingRecord.id,
       {
         data: {
           projectedYearlySalary: parseInt(annualSalary),
           totalTaxToBePaid: parseInt(totalTaxToBePaid),
-          monthlyAmountToBePaid: parseInt(monthlyTax),
+          monthlyAmountToBePaid: String(year), // Storing the year
           totalPaid: parseInt(newTotalPaid),
           tax_slab: taxSlabId,
         },
@@ -303,6 +338,20 @@ async function updateWithHoldingTax(
     );
     console.log("Updated withholding tax:", updatedWithHoldingTax);
   } else {
-    console.log(`Withholding tax record not found for employee ${employeeId}`);
+    const newWithHoldingTax = await strapi.entityService.create(
+      "api::with-holding-tax.with-holding-tax",
+      {
+        data: {
+          emp_no: employeeId,
+          projectedYearlySalary: parseInt(annualSalary),
+          totalTaxToBePaid: parseInt(totalTaxToBePaid),
+          fiscalYear: String(year), // Storing the year
+          totalPaid: parseInt(totalTaxToBePaid / 12), // Initial tax for the first month
+          tax_slab: taxSlabId,
+          publishedAt: new Date(), // Setting the publishedAt field to the current date
+        },
+      }
+    );
+    console.log("Created new withholding tax entry:", newWithHoldingTax);
   }
 }
