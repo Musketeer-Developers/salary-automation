@@ -121,6 +121,14 @@ module.exports = createCoreController(
           let joiningMonthName = getMonthName(joiningMonth)
           joiningMonthName = joiningMonthName.toLowerCase(); 
           let joiningYear = joiningDate.getFullYear();
+
+          let joiningFiscalYearCalculator;
+          if (monthEnum[joiningMonthName] < 7) {
+            joiningFiscalYearCalculator = joiningYear - 1;
+          } else {
+            joiningFiscalYearCalculator = joiningYear;
+          }
+        console.log("Fiscal year calculator:", fiscalYearCalculator);
           
           let totalHours = 0;
           let paidLeavesUsed = 0; // Initialize counter for paid leaves used
@@ -229,8 +237,10 @@ module.exports = createCoreController(
           console.log("Total Tax paid before this month: ", totalTaxPaid);
           console.log("Joining Month in fiscal year: ", fiscalYearEnum[joiningMonthName]);
           console.log("req.year, joiningYear", req.year, ", ",joiningYear)
+          
           let monthsWorkedInThisYear = 12;
-          if (joiningYear === fiscalYearCalculator) {
+          console.log("joiningYearTAX, fiscalYearCalculator: ", joiningFiscalYearCalculator,fiscalYearCalculator);
+          if (joiningFiscalYearCalculator == fiscalYearCalculator) {
             monthsWorkedInThisYear = 12 - fiscalYearEnum[joiningMonthName];
           }
 
