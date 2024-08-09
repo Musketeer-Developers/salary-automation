@@ -227,7 +227,7 @@ module.exports = createCoreController(
           console.log("Joining Month in fiscal year: ", fiscalYearEnum[joiningMonthName]);
           console.log("req.year, joiningYear", req.year, ", ",joiningYear)
           let monthsWorkedInThisYear = 12;
-          if (joiningYear === req.year) {
+          if (joiningYear === fiscalYearCalculator) {
             monthsWorkedInThisYear = 12 - fiscalYearEnum[joiningMonthName];
           }
 
