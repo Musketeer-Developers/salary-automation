@@ -94,6 +94,9 @@ module.exports = createCoreController(
           return;
         }
 
+        // Array to store the results
+        const result = [];
+
         for (let i = 0; i < monthlySalaries.length; i++) {
           console.log("Processing salary for employee:", monthlySalaries[i].employee.id);
 
@@ -288,9 +291,18 @@ module.exports = createCoreController(
             monthlyTax,
             monthsWorkedInThisYear
           );
+
+          // Collect the data to send in the response
+          result.push({
+            employeeId: monthlySalaries[i].employee.id,
+            monthlyWithholdingTax: parseInt(monthlyTax),
+            monthsWorkedInThisYear: monthsWorkedInThisYear,
+            projectedYearlySalary: annualSalary,
+          });
         }
 
-        ctx.body = { message: "Salary Calculated" };
+        ctx.body = result;
+
       } catch (error) {
         console.error("Error calculating salary:", error);
         ctx.status = 500;
