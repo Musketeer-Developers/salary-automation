@@ -64,6 +64,67 @@ module.exports = createCoreController(
       );
       const monthlyHealthAllowance = parseInt(healthAllowanceAnnual / 12);
 
+      const monthEnum = {
+        january: 0,
+        february: 1,
+        march: 2,
+        april: 3,
+        may: 4,
+        june: 5,
+        july: 6,
+        august: 7,
+        september: 8,
+        october: 9,
+        november: 10,
+        december: 11,
+      };
+
+      const fiscalYearEnum = {
+        july: 0,
+        august: 1,
+        september: 2,
+        october: 3,
+        november: 4,
+        december: 5,
+        january: 6,
+        february: 7,
+        march: 8,
+        april: 9,
+        may: 10,
+        june: 11,
+      };
+
+      const currentDate = new Date();
+      const month = monthEnum[currentDate.getMonth()];
+      const year = currentDate.getFullYear();
+
+      let fiscalYearCalculator;
+      if (monthEnum[month] < 6) {
+        fiscalYearCalculator = year - 1;
+      } else {
+        fiscalYearCalculator = year;
+      }
+      console.log("Fiscal year calculator:", fiscalYearCalculator);
+
+      const fiscalYear = [
+        `${"july"}${fiscalYearCalculator}`,
+        `${"august"}${fiscalYearCalculator}`,
+        `${"september"}${fiscalYearCalculator}`,
+        `${"october"}${fiscalYearCalculator}`,
+        `${"november"}${fiscalYearCalculator}`,
+        `${"december"}${fiscalYearCalculator}`,
+        `${"january"}${fiscalYearCalculator + 1}`,
+        `${"february"}${fiscalYearCalculator + 1}`,
+        `${"march"}${fiscalYearCalculator + 1}`,
+        `${"april"}${fiscalYearCalculator + 1}`,
+        `${"may"}${fiscalYearCalculator + 1}`,
+        `${"june"}${fiscalYearCalculator + 1}`,
+      ];
+      console.log("Fiscal year:", fiscalYear);
+
+      const fiscalYearString = `${fiscalYearCalculator}-${fiscalYearCalculator + 1}`;
+
+
       const whtData = await strapi.entityService.create(
         "api::with-holding-tax.with-holding-tax",
         {
@@ -72,6 +133,7 @@ module.exports = createCoreController(
             healthAllowance: monthlyHealthAllowance,
             projectedYearlySalary: projectedAnnualSalary,
             totalPaid: 0,
+            fiscalYear: fiscalYearString,
             publishedAt: Date.now(),
           },
         }
